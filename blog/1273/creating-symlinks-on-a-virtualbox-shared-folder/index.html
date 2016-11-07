@@ -1,0 +1,55 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Creating Symlinks on a VirtualBox Shared Folder | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Creating Symlinks on a VirtualBox Shared Folder</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 12/06/2012. By Pete Otaqui.
+        </p>
+        <p>I have an OS X host computer, running an Ubuntu guest, and I found that the guest could not create symlinks in a shared folder.</p>
+        <p>All the permissions were fine, I could create, modify and delete files and directories in the shared folder from the guest, and existing symlinks worked as expected, but I could not create any new symlinks.</p>
+        <p>It seems that this behaviour was intentionally introduced as a security measure to stop guests being able to create symlinks outside of the shared folder area.</p>
+        <p>
+          <a href="https://www.virtualbox.org/ticket/10085#comment:12">Trac ticket 10085</a>  on the VirtualBox has some good information, but here is the fix (which you need to run from the host machine):</p>
+        <pre>VBoxManage setextradata GUEST_NAME VBoxInternal2/SharedFoldersEnableSymlinksCreate/SHARE_NAME 1
+</pre>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1276/you-should-be-using-a-virtual-machine-for-local-development-instead-of-wampp-mamp-etc/index.html">You should be using a Virtual Machine for local development (instead of WAMPP / MAMP / etc)</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1271/debugging-javascript-on-the-iphone-or-ipad/index.html">Debugging Javascript on the iPhone or iPad</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

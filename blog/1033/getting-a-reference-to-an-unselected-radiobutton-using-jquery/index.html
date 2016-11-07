@@ -1,0 +1,69 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Getting a reference to an unselected radiobutton (using jQuery) | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Getting a reference to an unselected radiobutton (using jQuery)</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 02/08/2011. By Pete Otaqui.
+        </p>
+        <p>The “change” event on a radiobutton input only fires when it becomes selected. If you want to trigger some behaviour on an unselected radiobutton, then you have to bind to the change event of the radiogroup, which you can do like so:</p>
+        <pre class="brush: xml; title: ; notranslate" title="">&lt;ul&gt;
+  &lt;li&gt;
+    &lt;input id="r1" name="something" type="radio" value="basic" /&gt;
+    &lt;label for="r1"&gt;Basic&lt;/label&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;input id="r2" name="something" type="radio" value="standard" /&gt;
+    &lt;label for="r2"&gt;Standard&lt;/label&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;input id="r3" name="something" type="radio" value="advanced" /&gt;
+    &lt;label for="r3"&gt;Advanced&lt;/label&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;script&gt;
+$("input[name='inputName']").change(function(ev) {
+    
+});
+&lt;/script&gt;
+</pre>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1020/building-conways-game-of-life-in-javascript/index.html">Building Conway's Game of Life in Javascript</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1028/rtl-input-text-with-large-text-indent-value-magically-scrolls-in-opera/index.html">RTL Input text with large text-indent value "magically scrolls" in Opera</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

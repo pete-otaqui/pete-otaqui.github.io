@@ -1,0 +1,117 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Enable Google Gears and Offline Gmail for Mozilla Prism | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Enable Google Gears and Offline Gmail for Mozilla Prism</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 30/01/2009. By Pete Otaqui.
+        </p>
+        <p><em>[<strong>Warning</strong> : this post suggests stuff that may not work now, or may break in the future.  Use at your own risk!]</em> </p>
+        <p>I’m really happy to hear that,
+          <a href="http://gmailblog.blogspot.com/2009/01/new-in-labs-offline-gmail.html">as the official google blog points out</a>, Gmail now has support for Google Gears allowing you to view your mail offline.</p>
+        <p>This has caused quite a stir in the blogging community –
+          <a href="http://www.techcrunch.com/2009/01/27/gmail-goes-offline-with-google-gears/">TechCrunch invites you to throw off your chains</a>,
+          <a href="http://googlewatch.eweek.com/content/google_gears/googles_offline_gmail_points_to_greater_google_gears_exposure.html">GoogleWatch speculates that it might be the tipping point for Gears adoption</a>,
+          <a href="http://www.bytebot.net/blog/archives/2009/01/28/offline-gmail-via-google-gears">Colin Charles mentioning SSBs such as Fluid and Prism</a>  (which this article is about),
+          <a href="http://googlesystem.blogspot.com/2009/01/10-good-things-about-offline-gmail.html">Google Operating System giving a basic overview</a>  and also
+          <a href="http://gadgetwise.blogs.nytimes.com/2009/01/29/googles-gmail-now-works-offline/">the GadgetWise NYT blog giving it a spread</a> .</p>
+        <p>So far, so good. Now what if we want to use a Site Specific Browser, such as those created by
+          <a href="http://fluidapp.com">Fluid</a>  and
+          <a href="http://labs.mozilla.com/projects/prism/">Mozilla Prism</a> ? These “SSBs” are essentially entire browsers, but used only for a single web app – which is quite handy really. I think that Google’s paradigm of basically making each tab / window in your browser it’s own application instance
+          may well remove the need for things like this eventually, but for the time being it would be great to use Gmail’s new offline capability in an SSB.</p>
+        <p>Well – we can’t do much about enabling Gears in Fluid, since it’s based on WebKit. Check back if you here that Google releases some frm of plugin for WebKit (although actually WK already has HTML5 style “local storage” using SQLite so it could
+          be native support).</p>
+        <p>We can however do some hacking to get Gears installed in a Prism browser, so let’s go through the process. By the way – I am using Mac OS X 10.5, but I think this should work for any platform that can get Firefox and Google Gears.</p>
+        <p>I’m using a Google Apps For Your Domain account, it’s worked fine there, although your account will have to have Offline access enabled by google (patience, young grasshopper!).</p>
+        <h3>Step 1: Split a Beam</h3>
+        <p>Go and
+          <a href="http://labs.mozilla.com/projects/prism/">install Mozilla Prism</a> . I did this by installing it as an extension to my current Firefox.</p>
+        <p>Once it’s installed and you have restarted the browser, login to your Gmail and from the Tools menu choose “Convert Website To Application.”</p>
+        <p>Choose whatever options you like in terms of where to put the shortcut. Personally I grabbed
+          <a href="http://chris.ivarson.name/goodies/">Chris Ivarson’s awesome Fluid Gmail Icons</a>  and used Preview.app to convert the 128×128 version into a PNG file.</p>
+        <p>I *also* had a slight issue with not being able to create the app inside the Applications folder, because it needed to Authenticate but just failed silently – YMMV.</p>
+        <p>Assuming that’s done you should have a nice new Gmail SSB, which you can start and log in to Gmail with. Funky.</p>
+        <h3>Step 2: Start The Fans, Please!</h3>
+        <p>[Note: you have to be older than young, from the UK and to know who Richard O’Brien is to get that “start the fans” bit]</p>
+        <p>So now we need to get Google Gears installed. You can try doing this from Gmail’s own interface but it will fail complaining that “Gears is not compatiable with XYZ” (where XYZ is the name you gave it and a version number). This is because, even
+          though your Gmail webapp *is( Firefox under the hood, it doesn’t report itself as such to the extension. What we need to do is convince the extension that it is in fact compatible with it.</p>
+        <p>[Note: it might be more efficient if you want to install several extensions to make your SSB report itself as really being Firefox, but I’m happy with a one-at-a-time approach].</p>
+        <p>The next thing to do is actually download Google Gears manually. I suggest that you really do try (and fail) to install it from inside the Prism app, because you will be told the current, valid URL for the XPI in the process. If you’re super lazy,
+          here’s where I got mine from (not a link so that you’re encouraged to FIND THE RIGHT URL FOR YOURSELF!):</p>
+        <p>http://dl.google.com/gears/current/gears-osx-opt.xpi</p>
+        <p>You might want to use Safari / Opera / wget / IE to actually download it.</p>
+        <h3>Step 3: Unpack, Tweak, Repack</h3>
+        <p>An XPI file is in fact just a ZIP file with delusions of grandeur. Rename the file to “gears-osx-opt.zip” and unpack it.</p>
+        <p>Now open up “install.rdf” and find the bit that looks like this:</p>
+        <p>&lt;em:targetApplication&gt;
+          <br> &lt;Description&gt;
+          <br> &lt;em:id&gt;{ec8030f7-c20a-464f-9b0e-13a3a9e97384}&lt;/em:id&gt;
+          <br> &lt;em:minVersion&gt;1.5&lt;/em:minVersion&gt;
+          <br> &lt;em:maxVersion&gt;3.0.*&lt;/em:maxVersion&gt;
+          <br> &lt;/Description&gt;
+          <br> &lt;/em:targetApplication&gt;
+        </p>
+        <p>The big long string in curly brackets is the Firefox GUID.&nbsp; We will need to change this, and also the version numbers.</p>
+        <p>I found the GUID and version numbers inside my (OS X-specific) “Gmail.app” that Prism created.&nbsp; Control+Click on it and choose “Show Package Contents” then navigate to “Contents/Resources/application.ini” and open this in a text editor.&nbsp;
+          It is the “Version” and “ID” values that you want from the “[App]” section.</p>
+        <p>Applying these to the original install.rdf file we get this (I’ve extended the version numbers just for the hell of it):
+          <br> &lt;em:targetApplication&gt;
+          <br> &lt;Description&gt;
+          <br> &lt;em:id&gt;prism@developer.mozilla.org&lt;/em:id&gt;
+          <br> &lt;em:minVersion&gt;0.1.*&lt;/em:minVersion&gt;
+          <br> &lt;em:maxVersion&gt;10.0.*&lt;/em:maxVersion&gt;
+          <br> &lt;/Description&gt;
+          <br> &lt;/em:targetApplication&gt;
+        </p>
+        <p>Save the edited “install.rdf” file and now you need to repack the zip / xpi.&nbsp; Take note – you should compress the *files* and not the *directory* or it won’t work.</p>
+        <p>Change your newly created zip file’s extension back to XPI – and we’re ready to install!</p>
+        <h3>Step 4: Install</h3>
+        <p>This may vary across platforms, I’m not sure.</p>
+        <p>From the *status bar* (an unusual place to get to the Add Ons / Extensions list) of your Prism app, click the cog and choose “Tools”, “Addons”.&nbsp; This should pop open the Add Ons panel.</p>
+        <p>Drag and drop the XPI onto the Add Ons panel and, hopefully, bingo!</p>
+        <p>If you get an error about “version support” then you might have got the ID or version number wrong somewhere.&nbsp; If you get one about “cannot find install script” then your XPI / zip is badly formed.&nbsp; Leave a comment if you need more help
+          here.</p>
+        <h3>Step 5: Enable Gears for Gmail</h3>
+        <p>You’ll need to restart your browser and log back in to GMail.&nbsp; Then you should be able to click the “Offline” icon at the top of the interface and go through the normal Gears “I trust this application” process.</p>
+        <p>That’s it! You should now be able to access your mail offline. It’s worth noting that the shortcut that gears can create for you to <em>open</em>  your email while offline seems to work fine too.</p>
+        <p><em>[Update 31st Jan 2009: It looks like <a href="http://fluidapp.com/blog/2008/05/28/fluid-gears-update/">Fluid may support Gears sometime soon</a> !]</em> </p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../396/performing-operations-on-mysql-data-while-copying-between-tables/index.html">Performing Operations on MySQL Data While Copying between Tables</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../377/floor-plan-software-ideas/index.html">Floor Plan Software Ideas</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

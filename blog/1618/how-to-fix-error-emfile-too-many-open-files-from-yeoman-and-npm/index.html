@@ -1,0 +1,71 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fix “Error: EMFILE, too many open files” from Yeoman / npm | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Fix “Error: EMFILE, too many open files” from Yeoman / npm</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <div class="post-image">
+          <img src="../../wp-content/uploads/emfile-from-npm-yeoman.jpg" alt="Fix 'Error: EMFILE, too many open files' from Yeoman / npm">
+        </div>
+        <p class="post-info">
+          Posted on 15/07/2013. By Pete Otaqui.
+        </p>
+        <p>I’ve had several occasions where I’ve run <code>npm update</code> or <code>npm -g update</code> and received an EMFILE, too many open files error, with a high correlation to yeoman involvement.</p>
+        <p>This error is caused by the sheer number of individual files being opened by npm during an update – lots of those packages you installed include source code, tests and lots of their own dependencies. There are a few approaches you can take to
+          deal with this.</p>
+        <p><span id="more-1618"></span> </p>
+        <h2>Method 1: Remove unwanted packages</h2>
+        <p>The first thing you can do to try and remedy the EMFILE without doing any tinkering is simply to remove any unwanted npm packages and yeoman generators. Bear in mind, you only need a generator to create the project, and it can be got rid off if
+          you aren’t planning on recreating a new project with that skeleton any time soon. For example, I played around with the angular generator, but don’t have any new angular projects coming up, so I can just do this:</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">npm -g remove generator-angular
+</pre>
+        <h2>Method 2: Run as root</h2>
+        <p>Your root user may well have a higher “soft limit” than your normal user, which will avoid the EMFILE error. Try running the command as root:</p>
+        <p>sudo npm -g update</p>
+        <p>Don’t forget that if you normally run global npm commands under your own username that you will want to adjust permissions back once complete:</p>
+        <p>sudo chown -R USER:GROUP /usr/local/lib/node_modules</p>
+        <p>Obviously replacing “USER” and “GROUP” in the above command with the right names.</p>
+        <h2>Method 3: Increase the “Soft Limit” for your OS to stop EMFILE from appearing</h2>
+        <p>As the
+          <a href="https://github.com/yeoman/yeoman/wiki/Additional-FAQ#q-im-getting-emfile-too-many-open-files">Yeoman Additional FAQ</a>  suggests, you can increase the “soft limit” of the maximum number of files by editing your <code>.bashrc</code> or <code>.zshrc</code> file.</p>
+        <p>Depending on your OS and whether your environment is a virtual machine, you may be able to increase the “hard limit”. Note that the “soft limit” is meant to curb resource usage by users and processes, the hard limit is the most the OS will allow.
+          If you increase the hard limit, you may still need to up the soft limit as well.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1630/deal-with-googles-change-in-rankings/index.html">Best way to deal with Google's June 2013 Changes in rankings of smartphone search results</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1594/the-super-quick-start-guide-to-yeoman-grunt-and-bower/index.html">The Super Quick Start Guide to Yeoman, Grunt and Bower</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

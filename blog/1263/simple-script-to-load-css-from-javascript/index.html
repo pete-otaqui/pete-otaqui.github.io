@@ -1,0 +1,89 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Simple script to load CSS from Javascript | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Simple script to load CSS from Javascript</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 31/05/2012. By Pete Otaqui.
+        </p>
+        <p>Since I actually checked the search queries leading to this site, I found that quite a few people come here looking to learn about loading CSS with Javascript. &nbsp;I posted about
+          <a href="../../890/cssp-loading-css-with-javascript-and-getting-an-onload-callback/index.html">getting an onload callback when loading css</a>, but I thought I’d also post a really simple method for loading CSS without any dependencies.</p>
+        <p><span id="more-1263"></span> </p>
+        <p>The loadcss() function below is very straightforward – it just creates a link tag with the appropriate attributes and appends it to the head of the document.</p>
+        <p>You can see a
+          <a href="http://localhost/code/loadcss/">demo of the loadcss script in action</a> .</p>
+        <pre>&lt;!DOCTYPE HTML&gt;
+&lt;html lang="en-US"&gt;
+&lt;head&gt;
+ &lt;meta charset="UTF-8"&gt;
+ &lt;title&gt;Load CSS With Javascript&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+ &lt;h1&gt;Load CSS With Javascript&lt;/h1&gt;
+ &lt;button&gt;Load the CSS&lt;/button&gt;
+ &lt;script type="text/javascript" src="loadcss.js"&gt;&lt;/script&gt;
+ &lt;script type="text/javascript"&gt;
+ /**
+ * Loads a CSS file from the supplied URL
+ * @param {String} url    The URL of the CSS file, if its relative
+                          it will be to the current page's url
+ * @return {HTMLElement}  The &lt;link&gt; which was appended to the &lt;head&gt;
+ */
+ function loadcss(url) {
+   var head = document.getElementsByTagName('head')[0],
+   link = document.createElement('link');
+   link.type = 'text/css';
+   link.rel = 'stylesheet';
+   link.href = url;
+   head.appendChild(link);
+   return link;
+ }
+ // I've used raw DOM API here, but it would be even simpler
+ // with something like jQuery
+ var button = document.getElementsByTagName('button')[0];
+ button.addEventListener('click', function(ev) {
+ loadcss('my_css_file.css');
+ }, false);
+ &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1271/debugging-javascript-on-the-iphone-or-ipad/index.html">Debugging Javascript on the iPhone or iPad</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1237/some-notes-about-extracting-or-splitting-a-folder-from-a-large-repository-into-a-git-submodule/index.html">Some notes about extracting (or splitting) a folder from a large repository into a git submodule</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

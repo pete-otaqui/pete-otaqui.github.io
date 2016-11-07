@@ -1,0 +1,65 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Yahoo Pipe for Wikipedia Contribution Comments | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Yahoo Pipe for Wikipedia Contribution Comments</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 03/01/2009. By Pete Otaqui.
+        </p>
+        <p>If you edit
+          <a href="http://wikipedia.org">Wikipedia</a>  and have any kind of tumblog or lifestream, you might have found that the RSS feed that the
+          <a href="http://www.mediawiki.org/wiki/MediaWiki">MediaWiki</a>  software gives you is not especially useful, listing as it does the entire edited page, making each item potentially huge.</p>
+        <p>To fix this, I created a
+          <a href="http://pipes.yahoo.com/pipes/pipe.info?_id=ZK8__jzZ3RG8UgvOBRNMsA">Yahoo Pipe showing Wikipedia Contributions – comments only</a>  which strips out the page content, leaving only the comment that was left. I’ve also given it a URL parameter (“target”) so you can use it for your own (or any other) Wikipedia username.</p>
+        <p>The idea is relatively simple, but I’ll list the process if you are interested in learning about the power of Pipes:</p>
+        <ol>
+          <li>Add a “Text Input” and give it a name of “target” (which is the same as the URL parameter required for the Wikipedia Contributions feed for a given user)</li>
+          <li>Add a “URL Builder” with the basic URL for contributions and query parameters for name (which is “Special:Contributions”), feed (which is “rss”) and then one for target.</li>
+          <li>Connect the output of the Text Input to the target parameter in the URL Builder – now you can add &amp;target=MyUserName to pipe URL to change user</li>
+          <li>Add a “Fetch Feed” and connect it’s URL to the output of the URL Builder</li>
+          <li>Wikipedia pages can be long, too long in fact for Pipes’ regular expression parser, so add a “Loop” and then drag a “Subtring” into it. I trimmed the comments to 1024 in length, which I think is a reasonable amount in that it should be more
+            than the length of the comment (actually limited to 200 characters) and any leading “junk” that we don’t want. the Loop should work on, and assign results, to “item.description”</li>
+          <li>Now to strip out everything except the comment, add a Regex and connect the Loop’s output to it. We need two rules running on item.description, the first to strip newlines (find: “\n”, replace with “”, “g” option) and then find the comment (find:
+            “[^:]+:(.*)&amp;lt;\/p&amp;gt;.*”, replace with “$1”, no options).</li>
+          <li>Connect the Regex output to the Feed output … and you’re done!</li>
+        </ol>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../325/dslr-photography-projects/index.html">DSLR Photography Projects</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../309/buying-your-first-dslr/index.html">Buying your first DSLR</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

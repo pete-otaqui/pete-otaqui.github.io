@@ -1,0 +1,84 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Javascript EventEmitter Mixin | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Javascript EventEmitter Mixin</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 16/11/2010. By Pete Otaqui.
+        </p>
+        <pre class="brush: jscript; title: ; notranslate" title="">/**
+ * EventEmitter Mixin
+ * 
+ * Designed to be used in conjunction with a mixin "augment" function,
+ * such as http://chamnapchhorn.blogspot.com/2009/05/javascript-mixins.html
+ *
+ * @usage augment(MyClass, EventEmitter);
+ * my_inst = new MyClass();
+ * my_inst.on('someEvent', function(e){ console.dir(e); });
+ * my_inst.trigger('someEvent', {eventProp:'value'});
+ */
+var EventEmitter = function() {};
+EventEmitter.prototype.on = function(name, callback, context) {
+  if ( !context ) context = this;
+  if ( !this._listeners ) this._listeners = {};
+  if ( !this._listeners[name] ) this._listeners[name] = [];
+  var f = function(e) { callback.apply(context, [e]); };
+  this._listeners[name].push(f);
+};
+EventEmitter.prototype.trigger = function(name, event) {
+  if ( !this._listeners ) this._listeners = {};
+  if ( !this._listeners[name] ) return;
+  var i = this._listeners[name].length;
+  while ( i-- ) this._listeners[name][i](event);
+};
+EventEmitter.prototype.removeListener = function(name, callback) {
+  if ( !this._listeners ) this._listeners = {};
+  if ( !this._listeners[name] ) return;
+  var i = this._listeners[name].length;
+  while ( i-- ) {
+    if ( this._listeners[name][i] === callback ) {
+      this._listeners[name].splice(i, 1);
+    }
+  }
+};
+</pre>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1011/adding-vertical-split-support-to-gnu-screen-in-mac-os-x-snow-leopard/index.html">Adding Vertical Split support to GNU Screen in Mac OS X Snow Leopard</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../919/started-work-on-jquery-ui-modal-widget/index.html">Started work on jQuery UI Modal widget</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

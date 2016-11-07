@@ -1,0 +1,53 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Transparent IFrames in Internet Explorer using Javascript | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Transparent IFrames in Internet Explorer using Javascript</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 10/06/2008. By Pete Otaqui.
+        </p>
+        <p>In order to have an IFrame with a transparent background in Internet Explorer, you need to add an “allowtransparency” attribute, like so:</p>
+        <p><code>&lt;iframe src="iframe_source.html" id="iframe_id" allowtransparency="true" /&gt;</code></p>
+        <p>However, if you want to set the transparency with Javascript via the DOM, you must camelCase the property:</p>
+        <p><code>document.getElementById('iframe_id').allowTransparency = true;</code></p>
+        <p>Note – you must also make sure that &lt;body&gt; tag in the document contained by the iframe is also transparent in order for the parent’s colours to show through.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../94/endlessly-disconnecting-bluetooth-and-how-to-actually-disconnect/index.html">Endlessly Disconnecting Bluetooth - and how to actually disconnect</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../92/firefox-3-rc1-extensions-2/index.html">Firefox 3 RC1 Extensions</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

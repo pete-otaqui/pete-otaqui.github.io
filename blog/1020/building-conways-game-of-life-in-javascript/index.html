@@ -1,0 +1,56 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Building Conway’s Game of Life in Javascript | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Building Conway’s Game of Life in Javascript</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 02/08/2011. By Pete Otaqui.
+        </p>
+        <p>As part of an interesting exercise at work, I built an implementation of
+          <a href="http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Conway’s Game Of Life</a>  in Javascript. If you haven’t come across the Game Of Life, it’s really quite interesting and worth looking at. My colleagues also made variations, including canvas-based and Web GL 3 dimensional (there was even discussion
+          about n-dimensional, with sliders to view the 4th, 5th and further dimensions). My particular take was to make the game space “infinite” rather than a fixed grid.</p>
+        <p>It’s not really infinite of course, I haven’t made any attempt to have a position greater than Number.MAX_VALUE. The real point is that it is possible to have a huge playing area, and only the living &amp; possibly-living-next-round cells are
+          taken into account.</p>
+        <p>I avoided using any ready-made frameworks, in part so that it could be transported to the server-side on top of something like
+          <a href="http://nodejs.org">NodeJS</a>  – I was imagining a multi-player game where each user could “paint” cells onto the canvas, and maybe even that next-generation cells would take an identifier from their parents, letting people “fight”. I haven’t really got the time
+          for that at the moment, but it seemed a nice idea.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1072/testing-remote-php-websites-with-capybara-cucumber-mechanize-selenium-2-webdriver-and-saucelabs/index.html">Testing remote (PHP) websites with Capybara, Cucumber, Mechanize, Selenium 2 Webdriver ... and SauceLabs</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1033/getting-a-reference-to-an-unselected-radiobutton-using-jquery/index.html">Getting a reference to an unselected radiobutton (using jQuery)</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

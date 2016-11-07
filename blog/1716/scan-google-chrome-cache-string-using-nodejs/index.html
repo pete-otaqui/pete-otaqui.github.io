@@ -1,0 +1,73 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Scan the Google Chrome Cache for a string using NodeJS | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Scan the Google Chrome Cache for a string using NodeJS</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 21/10/2013. By Pete Otaqui.
+        </p>
+        <p>I wanted to hunt in my browser cache for a particular string (well, regular expression in fact), and pull out matching contents. There didn’t seem to be an immediately obvious way of doing this with chrome://cache, so I wrote a little nodejs script.</p>
+        <p><span id="more-1716"></span> </p>
+        <p>Since I knew the only files I was interested in would be gzipped, I ran that and ignored any contents that returned an error.</p>
+        <p>You’ll need the path to the cache folder – it’ll vary if you aren’t using OS X as I was.</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">var fs = require('fs');
+var zlib = require('zlib');
+// here's the REGEX you want to search for:
+var regex = /otaqui/i;
+// here's the PATH to your Google Chrome cache directory.
+var dir = '/Users/USERNAME/Library/Caches/Google/Chrome/Default/Cache/';
+fs.readdirSync(dir).forEach(function(f) {
+    'use strict';
+    var path = dir + f;
+    var rawContents = fs.readFileSync(path);
+    zlib.gunzip(rawContents, function(err, result) {
+        if ( !err ) {
+            var contents = result.toString();
+            var match = contents.match(regex);
+            if ( match ) {
+                console.log('found in', f);
+            }
+        }
+    });
+});
+</pre>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1744/reinstall-deleted-app-mac-app-store-mavericks/index.html">How to reinstall a deleted app in the Mac App Store on Mavericks</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1652/setting-up-a-virtualbox-virtual-machine-for-web-development-with-multiple-sites-using-mod_vhost_alias-and-virtualdocumentroot/index.html">Setting up a Virtualbox Virtual Machine for Web Development with Multiple Sites using mod_vhost_alias and VirtualDocumentRoot</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

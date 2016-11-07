@@ -1,0 +1,102 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Page Optimisation Technique – Build Two Rows For The Fold | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Page Optimisation Technique – Build Two Rows For The Fold</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 07/02/2009. By Pete Otaqui.
+        </p>
+        <p>Despite suggestions to the contrary, we web developers still very much have to work with the concept of a “fold” – that is the part of the page that is immediately visible when a user visits your site.</p>
+        <p>This is usually considered to mean “before the user has to scroll down” but can also just mean “the stuff they look at first” even if they have a really big monitor. This gives us a slightly more useful thing to think about – the first “batch”
+          of content that will be at the top of the page, and incidentally will be the entirety of what a considerable portion of our users see first.</p>
+        <p>So, I have a suggestion to all the web *designers* out there to mull over: introduce the idea of “Two Rows” in your design. By having a single row that is for content “above the fold” and a second one for everything below, we can get the absolute
+          minimum “perceived load time” of the page.</p>
+        <p>Let’s have a look at a fairly standard wireframe of a page:</p>
+        <div id="attachment_416" style="width: 430px" class="wp-caption aligncenter">
+          <a href="http://localhost/blog/wp-content/uploads/layout_normal.png">
+            <img src="http://localhost/blog/wp-content/uploads/layout_normal.png" alt="&quot;Normal&quot; three column page layout" title="Normal three column page layout" width="420" height="420" class="size-full wp-image-416" sizes="(max-width: 420px) 100vw, 420px">
+          </a> 
+          <p class="wp-caption-text">Normal three column page layout</p>
+        </div>
+        <p>This will be more or less as you expect, a header and footer with 3 (or however many) columns in between.</p>
+        <p>Now let’s have a look at a wireframe designed for the fold:</p>
+        <div id="attachment_417" style="width: 430px" class="wp-caption aligncenter">
+          <a href="http://localhost/blog/wp-content/uploads/layout_optimised.png">
+            <img src="http://localhost/blog/wp-content/uploads/layout_optimised.png" alt="Optimised For the Fold Layout" title="Optimised For the Fold Layout" width="420" height="420" class="size-full wp-image-417" sizes="(max-width: 420px) 100vw, 420px">
+          </a> 
+          <p class="wp-caption-text">Optimised For the Fold Layout</p>
+        </div>
+        <p>As you can see, I’ve changed the structure to split the main content completely into two distinct rows.</p>
+        <p>The advantage here is that we developers can do several things to make the first row appear as quickly as possible:</p>
+        <ol>
+          <li>Firstly we don’t have to do anything. The source order itself will mean that the content of the first row is loaded first, meaning that you won’t have that all-to-common “pause for the right-hand-column” to load.</li>
+          <li>Place all styles at the top of the page, and all required scripts between the two rows – this will make the page appear correctly styled and have javascript-driven functionality available.</li>
+          <li>Taking the point above to a further degree, we could in fact *split* the javascript (and possibly even css) files, which is normally a abad idea, to provide only the functionality required for the “first row”, and then load other resources afterwards.
+            This is a rather extreme approach, but could help if your site really needs the content “above the fold” to be absolutely as fast as possible even at the cost of overall page performance.</li>
+          <li>With a dynamic site, we can flush the buffer after the first row, and leave any further processing overhead to happen after that much of the page has been sent to the browser.</li>
+        </ol>
+        <p>There is no real need for the actual design to exagerate the rows in the same way that the wireframe does – but you would need a horizontal split of the content at that point to make things as easy and flexible as possible. This limitation can
+          be overcome with CSS, and possibly javascript, but this will rapidly become fiddly and hard to maintain.</p>
+        <p>To demonstrate what I mean, I took the Guardian’s homepage, and reworked it (as a graphic) to have the horizontal split required for Two Rows, without really appearing much different to the current, pure-column structure.</p>
+        <p>Before:
+          <br>
+        </p>
+        <div id="attachment_423" style="width: 310px" class="wp-caption aligncenter">
+          <a href="http://localhost/blog/wp-content/uploads/guardian_original.jpg">
+            <img src="http://localhost/blog/wp-content/uploads/guardian_original-300x231.jpg" alt="Original Guardian Homepage" title="Guardian Original" width="300" height="231" class="size-medium wp-image-423" sizes="(max-width: 300px) 100vw, 300px">
+          </a> 
+          <p class="wp-caption-text">Original Guardian Homepage</p>
+        </div>
+        <p></p>
+        <p>And after (with the “second row” being slightly greyed out):
+          <br>
+        </p>
+        <div id="attachment_422" style="width: 310px" class="wp-caption aligncenter">
+          <a href="http://localhost/blog/wp-content/uploads/guardian_modified.jpg">
+            <img src="http://localhost/blog/wp-content/uploads/guardian_modified-300x231.jpg" alt="Modified Guardian Page" title="Guardian Modified" width="300" height="231" class="size-medium wp-image-422" sizes="(max-width: 300px) 100vw, 300px">
+          </a> 
+          <p class="wp-caption-text">Modified Guardian Page</p>
+        </div>
+        <p></p>
+        <p>This example worked fairly well in terms of “hiding” the row lines since some things are bumped right up to them and others have varying amounts of whitespace either side.</p>
+        <p>I must admit that I’ve never implemented this technique, but I certainly believe that it could have significant impact for a site like the Guardian that has a large amount of content “below the fold”.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../428/mozilla-fennec-alpha-2-release/index.html">Mozilla Fennec Alpha 2 Release</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../402/custom-model-and-field-result-set-in-cakephp/index.html">Custom Model and Field Result Set in CakePHP</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

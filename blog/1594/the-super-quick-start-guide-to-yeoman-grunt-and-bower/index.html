@@ -1,0 +1,102 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Super Quick Start Guide to Yeoman, Grunt and Bower | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>The Super Quick Start Guide to Yeoman, Grunt and Bower</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <div class="post-image">
+          <img src="../../wp-content/uploads/quick-start-guide-to-yeoman.png" alt="The Super Quick Start Guide to Yeoman, Grunt and Bower">
+        </div>
+        <p class="post-info">
+          Posted on 02/07/2013. By Pete Otaqui.
+        </p>
+        <p>
+          <a href="http://yeoman.io">Yeoman</a>  is a fantastic tool for giving you a standardised, thought out, useful project structure for html and javascript applications.</p>
+        <p>The only thing I think it lacks is a really straightforward quickstart guide for new users, hence this blog post.</p>
+        <p><span id="more-1594"></span> </p>
+        <h2>Step 0: Requirements</h2>
+        <p>Yeoman may not work or have more trouble running in Windows. &nbsp;Get yourself a Linux Virtual Machine, at once, and do all the following steps inside there.</p>
+        <h2>Step 1: Get Node / NPM</h2>
+        <p>You will need to install
+          <a title="NodeJS" href="http://nodejs.org">NodeJS</a>  in a manner suitable for your platform. &nbsp;This should (hopefully) come with
+          <a href="http://npmjs.org/">NPM</a>  as well, or if you not you will also need to install that.</p>
+        <h2>Step 2: Install yeoman, grunt and bower</h2>
+        <p>Note that the yeoman package is called “yo” and the grunt package is called “grunt-cli”.</p>
+        <pre class="brush: bash; title: ; notranslate" title="">$ npm install -g yo grunt-cli bower
+</pre>
+        <h2>Step 3: Get the generator(s) of your choice</h2>
+        <p>Yeoman uses “generators” to actually create project setups. &nbsp;The “standard” one is called “generator-webapp” but there are many others you may want to look at.</p>
+        <p>Find project generators like this (unfortunately not necessarily namespaced in any way with “yeoman”, so you will get false positives):</p>
+        <pre class="brush: bash; title: ; notranslate" title="">$ npm search generator
+</pre>
+        <p>Note that throughout 2013, yeoman underwent&nbsp;<em>significant</em>  changes, so if a generator package hasn’t been updated since March or April of 2013, you may want to avoid it.</p>
+        <p>To get the standard “webapp” generator you want to do this:</p>
+        <pre class="brush: bash; title: ; notranslate" title="">$ npm install -g generator-webapp
+</pre>
+        <p>You can always install another generator, for example for Backbone or AngularJS, if you want to start a project with those frameworks.</p>
+        <h2>Step 4: Create your project</h2>
+        <p>Create your project directory, and then run the generator to create all the files and folders you need to get started. &nbsp;In this case I’ve used the standard webapp-generator, which is invoked with the name “webapp”.</p>
+        <pre class="brush: bash; title: ; notranslate" title="">$ mkdir ~/projects/frabulator
+$ cd ~/projects/frabulator
+$ yo webapp
+</pre>
+        <p>Lots of the generators will ask you some questions about exactly what features you want or need. &nbsp;You can always tweak this stuff later, but it’s worth getting it right if you can, this is all about making things quick and easy!</p>
+        <h2>Step 5 … there is no Step 5</h2>
+        <p>That’s it. &nbsp;You should see lots of stuff is created in the directory, and your project is set up and ready to go. &nbsp;But what does that mean?</p>
+        <p>From here on in, you will be using <em>grunt</em>  (mostly) and&nbsp;<em>bower</em> &nbsp;(occasionally). &nbsp;You can use bower to install any new dependencies you might want, for example “howler” if you want to use that for web audio.</p>
+        <pre class="brush: bash; title: ; notranslate" title="">$ bower install howler
+</pre>
+        <p>Far more often though, you will be using grunt to serve (with live reload!), test and build your application. &nbsp;The following three commands are the most common things you will do from here on in:</p>
+        <pre class="brush: bash; title: ; notranslate" title="">$ grunt server
+# ... this will launch a webserver on port 9000 (by default),
+# ... it will launch&nbsp;the index in your browser, and will live
+# ... reload if you save changes to some&nbsp;project files
+$ grunt test
+# ... this will &nbsp;run your test suite. &nbsp;Exactly what this
+# ... means depends on&nbsp;your app, and the generator you
+# ... used, but generally it will run in a&nbsp;headless webkit
+# ... "phantom" browser
+$ grunt build
+# ... run the tests and package your app for distribution,
+# ... in 'dist/'
+</pre>
+        <p>There are more grunt commands built in. &nbsp;To get an idea, you can refer to the Gruntfile.js that your generator created for you, and obviously the Grunt.js documentation.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1618/how-to-fix-error-emfile-too-many-open-files-from-yeoman-and-npm/index.html">Fix "Error: EMFILE, too many open files" from Yeoman / npm</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1470/i-have-a-problem-with-angularjs/index.html">I have a problem with AngularJS</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

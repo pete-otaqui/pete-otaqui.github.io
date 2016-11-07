@@ -1,0 +1,60 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Shortest way to create an XHR in Javascript | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Shortest way to create an XHR in Javascript</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 18/04/2007. By Pete Otaqui.
+        </p>
+        <p>Nicolas Faugout has a very neat, and <em>tiny</em>,
+          <a href="http://ajax-prototype.blogspot.com/2007/02/workaround-to-make-ajax-calls-on.html">method for creating an XHR object in different browsers</a> :</p>
+        <pre>if (!XMLHttpRequest) {
+window.XMLHttpRequest = function() {
+return new ActiveXObject('Microsoft.XMLHTTP');
+}
+}
+// ....
+var xhr = new XMLHttpRequest();</pre>
+        <p>Via
+          <a href="http://ajaxian.com/archives/make-the-xhr-abstraction-shorter">Ajaxian</a> 
+        </p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../67/implementing-the-zend-framework-for-complex-projects-and-pages/index.html">Implementing the Zend Framework for complex projects and pages</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../65/microsoft-silverlight-vs-adobe-flash-and-windows-media-player-vs-adobe-media-player/index.html">Microsoft Silverlight vs Adobe Flash and Windows Media Player vs Adobe Media Player</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,164 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Introducing Javascript Promises (aka Futures) in Google Chrome Canary | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Introducing Javascript Promises (aka Futures) in Google Chrome Canary</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 28/08/2013. By Pete Otaqui.
+        </p>
+        <p>Javascript Promises, also known as Futures or occasionally Deferred, is
+          <a href="https://plus.google.com/u/0/100132233764003563318/posts/Hx5hSHC7tUp">now available in Google Chrome Beta</a>  (behind the “enable-experimental-web-platform-features” flag).</p>
+        <p>Take a look at the
+          <a href="http://dom.spec.whatwg.org/#promises">WHATWG Dom Spec for Promises</a>  for the definitive api.</p>
+        <p>
+          <a href="../../1374/event-emitter-pub-sub-or-deferred-promises-which-should-you-choose/index.html">I’ve written about Promises</a>  before, but will take the opportunity to give another introduction.</p>
+        <p><span id="more-1637"></span> </p>
+        <h2>Better than complicated callback logic</h2>
+        <p>Promises provide a very clear utility of being able to attach multiple callbacks to a single async operation.</p>
+        <p>Here’s an example where two <em>kinds</em>  of callback are attached to a single promise, one for debugging and one for actual application events:</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">var promise = getAjaxAndReturnAPromise();
+promise.then(
+  function(data){ console.debug('DEBUGGING', data); },
+  function(err){ console.error('DEBUGGING ERROR', err); }
+);
+promise.then(
+  function(data) { $(data.html).appendTo('body'); },
+  function(err) { $('&lt;div class="err"&gt;The request failed!&lt;/div&gt;').appendTo('body'); }
+);
+</pre>
+        <p>Obviously, you could just put both things in a single pair of success / callback functions. However, the more things you have “observing” an async function, the worse that gets, particularly if you need to start adding if / else logic and the
+          like.</p>
+        <h2>More importantly, we get chaining and error handling</h2>
+        <p>So far, so good – but as
+          <a href="https://twitter.com/domenic">Domenic Denecola</a>  writes,
+          <a href="http://domenic.me/2012/10/14/youre-missing-the-point-of-promises/">Promises are about much more than callback aggregation</a> .</p>
+        <p>Because a <code>then()</code> function should <em>also return a promise</em>  you can now perform composition and error handling in much more the way you can with synchronous programming.</p>
+        <p>Let’s consider an example. Imagine a situation where you want to:</p>
+        <ol>
+          <li>run an ajax request for an index file with a list of resource urls;</li>
+          <li>get the first url for immediate display;</li>
+          <li>get second url to cache it for better performance when the user clicks “next”;</li>
+          <li>stop the process and show an error to the user if either of the first two operations fail.</li>
+        </ol>
+        <p>We’ll also imagine that we have two methods:</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">function getAjax(url, onsuccess, onfailure); // callback based
+function getAjaxPromise(url); // returns a promise
+</pre>
+        <p>I’ve avoided using jQuery here since it’s promise implementation isn’t quite correct, so it should be avoided. Let’s imagine that getAjaxPromise returns a “correct” implementation of then (see the article by Dominic Denecola for more information).</p>
+        <h3>Callback Example</h3>
+        <pre class="brush: jscript; title: ; notranslate" title="">var cached_next_thing;
+// operation 1, get the index
+getAjax('http://example.com/things/index.json',
+  // success callback for operation 1
+  function(data1) {
+    // operation 2, fetch the first "thing"
+    getAjax(data1.things[0].url,
+      // success callback for operation 2
+      function(data2) {
+        // display the content of first "thing"
+        $(data2.thing.content).appendTo('#container');
+        // operation 3: get the second "thing" in case the user clicks "next"
+        getAjax(data1.things[1].url,
+          // operation 3 success callback
+          function(data3) {
+            cached_next_thing = data3.thing.content;
+          },
+          // operation 3 failure callback
+          function(err3) {
+            // no-op
+          }
+      },
+      // operation 2 error callback
+      function(err2) {
+        $('&lt;div class="error"&gt;Could not fetch the thing&lt;/div&gt;').appendTo('body');
+      }
+    );
+  },
+  // operation 1 error callback
+  function (err1) {
+    $('&lt;div class="error"&gt;Could not fetch the list of things&lt;/div&gt;').appendTo('body');
+  }
+);
+</pre>
+        <p>Nasty, isn’t it? And this is incredibly simple logic with hardly anything happening.</p>
+        <h3>Promises example</h3>
+        <pre class="brush: jscript; title: ; notranslate" title="">var list_of_things,
+    cached_next_thing;
+// operation 1
+getAjaxPromise('http://example.com/things/index.json')
+  .then(
+    function(data) {
+      list_of_things = data;
+      // operation 2
+      return getAjaxPromise(data.things[0].url);
+    },
+    function(err) {
+      $('&lt;div class="error"&gt;Could not fetch the list of things&lt;/div&gt;').appendTo('body');
+    }
+  )
+  .then(
+    function(data) {
+      $(data.thing.content).appendTo('#container');
+      // operation 3
+      return getAjaxPromise(list_of_things[1].url);
+    },
+    function(err) {
+      $('&lt;div class="error"&gt;Could not fetch the thing&lt;/div&gt;').appendTo('body');
+    }
+  )
+  .then(
+    function(data) {
+      var cached_next_thing = data.thing.content;
+    },
+    function(err) {
+      //no-op
+    }
+  );
+</pre>
+        <p>Hopefully you agree that this is much cleaner. The first thing of note is that success and failure pairs are always <em>next to each other</em>, rather than opposite ends of the nested callback tree.</p>
+        <p>Note that since we aren’t dealing with nested scopes, I had an extra variable so I could access the “list of things” in operation 3. The flip side is that because we don’t have nested scopes, we don’t have to work around potentially conflicting
+          argument names (by calling things data1, data2, etc). I think that the nested scope approach might seem “nicer” in a trivial example like this one, but again – start adding much more logic, and certainly any more operations, and you are indeed
+          in callback hell.</p>
+        <h2>Conclusion</h2>
+        <p>So there you have it – an example of promises compared to callbacks, which shows that even with a simple example you get immediate benefits of readability, and that with more complex examples you can compose and handle errors in a much more sensible
+          way than with nested callbacks.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1648/best-tasks-package-for-sublime-text-3-plaintext/index.html">Best Tasks Package for Sublime Text 3 - PlainText</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1633/startup-idea-open-shutter/index.html">Startup Idea: Open Shutter</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

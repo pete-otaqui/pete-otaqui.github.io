@@ -1,0 +1,86 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reacting To Events with the Dojo Dijit Editor | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Reacting To Events with the Dojo Dijit Editor</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 16/06/2008. By Pete Otaqui.
+        </p>
+        <p>I was writing a custom set of validation routines for a form, and using Dojo’s Dijit.Editor component – and having some trouble attaching my “invalid” class and a tooltip to a ‘required’ editor.</p>
+        <p>There were several parts to the problem:</p>
+        <ul>
+          <li>Iframe Transparency in IE</li>
+          <li>Targeting the containing div node, the editor’s iframe tag, and that iframe’s body node</li>
+          <li>Ignoring the weird default content that Dojo, or possibly the browser itself, adds to the Editor (a &lt;br /&gt; tag, but with a special attribute in Mozilla browsers)</li>
+          <li>Removing the class once the user makes a change to the content</li>
+        </ul>
+        <p>Ignoring all the rest, and a lot of the specifics (since I’m sure there are better ways to achieve all this) I’m just going to note how to get use dojo.connect to respond to a ‘click’ inside the editor area. It’s worth noting that using the normal
+          method’s you would expect <em>sort of</em>  work – but only when you click on the Editor’s toolbar rather than the inside the editable area. That being said, here you go:</p>
+        <p><code><br>
+&lt;textarea dojoType="dijit.Editor" id="dijitEditor"&gt;Click Me&lt;/textarea&gt;<br>
+&lt;script&gt;<br>
+dojo.addOnLoad(function() {<br>
+&nbsp;var dijitEditor = dijit.byId('dijitEditor');<br>
+&nbsp;var eBody = dijitEditor.iframe.contentDocument.body;<br>
+&nbsp;dojo.connect(eBody,'click',onEditorClick);<br>
+});<br>
+function onEditorClick() {<br>
+&nbsp;alert('you clicked the editor window');<br>
+}<br>
+&lt;/script&gt;<br>
+</code></p>
+        <p><strong>NB – Not IE-friendly</strong> . This won’t work in IE because of the contentDocument property, which it doesn’t support – but you could use the document.frames[] array instead. Note that the iframe’s id is widgetid+’_iframe’ in all except
+          Mozilla. So something like this:</p>
+        <p><code><br>
+dojo.addOnLoad(function() {<br>
+&nbsp;var dijitEditor = dijit.byId('dijitEditor');<br>
+&nbsp;var eBody;<br>
+&nbsp;if ( dojo.isIE ) {<br>
+&nbsp;&nbsp;eBody = document.frames['dijitEditor_iframe'].body;<br>
+&nbsp;} else {<br>
+&nbsp;&nbsp;eBody = dijitEditor.iframe.contentDocument.body;<br>
+&nbsp;}<br>
+&nbsp;dojo.connect(eBody,'click',onEditorClick);<br>
+});<br>
+</code></p>
+        <p>I really went down the rabbit hole for while chasing ‘ondijitclick’ and the ‘events’ / ‘captureEvents’ properties of the Dijit.Editor, but ended up using this fairly straightforward custom method.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../96/dojo-toolkit-book-reviews-dojo-the-definitive-guide-mastering-dojo/index.html">Dojo Toolkit Book Reviews - 'Dojo: The Definitive Guide', 'Mastering Dojo' and 'Dojo: Using The Dojo Javascript Library To Build Ajax Applications'</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../94/endlessly-disconnecting-bluetooth-and-how-to-actually-disconnect/index.html">Endlessly Disconnecting Bluetooth - and how to actually disconnect</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

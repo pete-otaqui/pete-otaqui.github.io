@@ -1,0 +1,59 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Some notes about extracting (or splitting) a folder from a large repository into a git submodule | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Some notes about extracting (or splitting) a folder from a large repository into a git submodule</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 19/04/2012. By Pete Otaqui.
+        </p>
+        <p>There is a lot of great information on StackOverflow about splitting git trees into submodules. We followed
+          <a href="http://stackoverflow.com/a/930286">this guide that suggests copying the repository and then using git-filter-branch</a> .</p>
+        <p>We are in the situation where we had quite a lot of branches (around 30) that we wanted to maintain, and many of these included commits to the main repository and the directory that we were splitting off. We’ve discovered a few things along the
+          way.</p>
+        <p><span id="more-1237"></span> </p>
+        <ul>
+          <li>Make sure you’ve done as much merging as you can, and minimise the number of branches you want to move across.</li>
+          <li>Take this as blocking project, and assume other work can’t really continue until this change has made it to master.</li>
+          <li>Apply this change to all active unmerged branches asap.</li>
+          <li>Where branches have commits across the new submodule boundary, you may need to create and apply patches since ‘git merge’ won’t work across the boundary, but ‘diff’ and ‘patch’ can.</li>
+        </ul>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1263/simple-script-to-load-css-from-javascript/index.html">Simple script to load CSS from Javascript</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1230/project-idea-minit/index.html">Project Idea: minit</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>You should be using a Virtual Machine for local development (instead of WAMPP / MAMP / etc) | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>You should be using a Virtual Machine for local development (instead of WAMPP / MAMP / etc)</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 03/07/2012. By Pete Otaqui.
+        </p>
+        <p>I think I’m not the only one who’s caused themselves headaches on their main working computer by either using an off-the-shelf server stack like MAMP, or by manually installing the parts you need to develop dynamic websites.</p>
+        <p>Since I worked at the BBC, and specifically on the Forge platform, I’ve become completely convinced by developing on a local virtual machine, which runs whatever OS you are deploying to. This immediately resolves all sorts of issues, completely
+          freeing you from ever worrying about the differences between Mac / Windows / RedHat / Debian / etc.</p>
+        <p>You also get other benefits like really easy snapshots of your setup, the ability to create very heavily customised setups without any side effects on the rest of your system, and so on. It’s also replicable, so you can give other developers a
+          copy of your whole platform very simply.</p>
+        <p>The next from here is using something Chef to manage your environment provisioning, but that’s probably still not streamlined enough for the average developer to sort out themselves.</p>
+        <p>So – my advice is that all web developers would almost certainly benefit from downloading VirtualBox and creating themselves a VM-per-deployment-target. Here are some other hints:</p>
+        <ul>
+          <li>In VirtualBox, you will probably want to set up 2 network interfaces, NAT so the vm can see out onto the internet, and INTERNAL so the host can see into the vm</li>
+          <li>You can enjoy the magic of dhcp, and still get to your vm via a hostname by editing the
+            <i>hosts</i> file on your host machine</li>
+          <li>If you want the vm to be easily portable across flash drives (or anything formatted as FAT32) you should create a VMDK disk and split it into 2GB files</li>
+          <li>You will almost certainly want to share your code directory to the VM, and assuming you are using a linux guest, you will be better off doing this via editing the “/etc/fstab” rather than Virtualbox’s auto mounting. Create the share, make it
+            permanent, create the directory on your vm that you want to map, and then add an entry to /etc/fstab. Check out the VBox manual for more info on correct values and uid and gid options.</li>
+          <li>If you do go for the shared folder bit with a linux guest, be aware that by default shared folders in VBox cannot create symlinks! You will get all sorts of silly warnings about read only filesystems and the like – check out
+            <a href="../../1273/creating-symlinks-on-a-virtualbox-shared-folder/index.html">my post about it</a> .</li>
+        </ul>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1280/first-impressions-of-using-a-google-hangout-for-agile-standups/index.html">First Impressions of Using A Google+ Hangout for Agile Standups</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1273/creating-symlinks-on-a-virtualbox-shared-folder/index.html">Creating Symlinks on a VirtualBox Shared Folder</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

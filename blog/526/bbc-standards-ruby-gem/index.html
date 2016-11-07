@@ -1,0 +1,57 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BBC Standards Ruby Gem | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>BBC Standards Ruby Gem</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 18/02/2010. By Pete Otaqui.
+        </p>
+        <p>Thanks to some brilliant tidying up of my work by my good friend
+          <a href="http://www.metade.org/">Patrick</a>, there is now a
+          <a href="http://github.com/metade/bbc_standards">bbc_standards ruby gem</a>  which you can use to validate pages against some of the
+          <a href="http://www.bbc.co.uk/guidelines/futuremedia/technical/">BBC Technical Guidelines</a>  (more specifically the “Semantic Mark-up” and “XHTML Integrity” standards).</p>
+        <p>This gem was originally designed to work with Cucumber, and initially was intended to just validate pages against the XHTML Strict doctype that BBC pages are usually required to use. Since it uses Nokogiri for validation – against the XML Schema
+          rather than the Doctype for what it’s worth – the testing is a) strict and b) *fast*. There are no external webservice calls, so it is fine to test all page loads within Cucumber, even testing the same URI many times over (since the bottleneck
+          will almost certainly be your app by some margin.</p>
+        <p>I’m currently working on a post about using the gem for the
+          <a href="http://www.bbc.co.uk/blogs/webdeveloper/">BBC Web Developer blog</a>, but I thought I’d point any interested parties at the code here and now.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../529/firebug-1-5-updates-with-cool-new-context-sensitive-break-on-next/index.html">Firebug 1.5 updates with cool new context-sensitive "Break On Next"</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../448/create-a-custom-cakephp-console-application-using-shells-tasks-models-and-controllers/index.html">Create A Custom CakePHP Console Application Using Shells, Tasks, Models and Controllers</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

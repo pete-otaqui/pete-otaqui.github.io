@@ -1,0 +1,66 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cucumber with Webrat and Mechanize on CentOS 5 | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Cucumber with Webrat and Mechanize on CentOS 5</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 20/11/2009. By Pete Otaqui.
+        </p>
+        <p>Thanks to
+          <a href="http://blog.chrislowis.co.uk/">Chris</a>  for this one.</p>
+        <p>The trick is to use JRuby and its gems, and also to install libxml2-devel</p>
+        <p><code>$ cd ~<br>
+$ wget http://jruby.kenai.com/downloads/1.4.0/jruby-bin-1.4.0.tar.gz<br>
+$ tar -C /usr/local/ -xzvf jruby-bin-1.4.0.tar.gz</code></p>
+        <p>You should now have Jruby. Add it’s bin directory to your path, presumably in your ~/.bash_profile file:
+          <br>
+          <code>$ export PATH=$PATH:/usr/local/jruby-1.4.0/bin<br>
+$ jruby -v</code></p>
+        <p>Now install some mechanize requirements:
+          <br>
+          <code>$ sudo yum install libxml2-devel libxslt-devel</code></p>
+        <p>If you <strong>don’t</strong>  already have the “normal” ruby installed, you can get to the jruby “gem” command by just typing “gem”. If you do have ruby, or want to be absolutely sure, type the commands like this:
+          <br>
+          <code>$ jruby -S gem install cucumber mechanize webrat</code></p>
+        <p>You’re good to go! You should now be able to run your features with:</p>
+        <p><code>$ cucumber features/</code></p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../458/using-a-proxy-with-cucumber-webrat-and-mechanize/index.html">Using a Proxy with Cucumber, Webrat and Mechanize</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../443/cakephps-basicsphp-functions-a-series-of-really-useful-shortcut-functions-available-globally-in-your-cakephp-app/index.html">CakePHP's basics.php functions - a series of really useful shortcut functions available globally in your CakePHP app</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

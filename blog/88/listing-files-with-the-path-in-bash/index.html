@@ -1,0 +1,63 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Listing files with the path in Bash | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Listing files with the path in Bash</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 01/03/2008. By Pete Otaqui.
+        </p>
+        <p>This little script will print a list of the current files in a directory, prefixed with the full path:</p>
+        <p><code>#!/bin/sh<br>
+curdir=`pwd`<br>
+if [ $# -eq 1 ]<br>
+then<br>
+	usrdir="$1"<br>
+	ls | xargs -I % echo `pwd`/% | sed -e s!$usrdir!!<br>
+else<br>
+	ls | xargs -I % echo `pwd`/%<br>
+fi</code></p>
+        <p>You can optionally provide an initial part of the path to ignore. I use this when writing code change emails where I have to list the updated files within a codebase (and I’ve touched most files in a given directory) and I clip the local path
+          up to the root of the codeset. Assuming the script is saved as “lspath”:</p>
+        <p><code>lspath /Users/pete/Sites/project/trunk</code></p>
+        <p>Even handier is piping it into the OS X clipboard for easy pasting:</p>
+        <p><code>lspath /Users/pete/Sites/project/trunk | pbcopy</code></p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../89/get-a-forward-delete-key-on-your-mac-book-with-double-command/index.html">Get a Forward Delete key on your Mac Book with Double Command</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../87/keyboard/index.html">Keyboard</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

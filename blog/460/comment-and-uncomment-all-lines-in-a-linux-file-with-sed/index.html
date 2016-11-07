@@ -1,0 +1,62 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Comment And Uncomment All Lines in a Linux File with Sed | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Comment And Uncomment All Lines in a Linux File with Sed</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 09/02/2010. By Pete Otaqui.
+        </p>
+        <p>Just a couple of sed one-liners for adding and removing comments in the form of # marks (in the case of my ~/.ssh/config file). I use this to toggle proxy settings (with connect.c) and it’s run by the awesome MarcoPolo location-aware app for OS
+          X. Both of these are safe to run repeatedly (you won’t end up with multiple # marks or anything).</p>
+        <p>First adding comments, which means a “#” mark at the start of every line
+          <br>
+          <code>sed -i '' 's/^\([^#]\)/#\1/g' ~/.ssh/config</code></p>
+        <p>Second removing the comments, just stripping out the “#” marks.
+          <br>
+          <code>sed -i '' 's/^#//g' ~/.ssh/config</code></p>
+        <p>A few things to note here, on the assumption that you can see how Regular Expressions work and are vaguely familiar with sed’s /find/replace/ style syntax:</p>
+        <ol>
+          <li>the “-i” flag means “edit in place” and requires an extra argument for the backup file’s extension. I’ve given an empty string so that no backup is made</li>
+          <li>sed requires escaping of capturing parentheses, hence the \( and \) in the first example</li>
+          <li>the final ‘g’ at the end of the expressions means “global”, i.e. replace all occurences</li>
+        </ol>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../448/create-a-custom-cakephp-console-application-using-shells-tasks-models-and-controllers/index.html">Create A Custom CakePHP Console Application Using Shells, Tasks, Models and Controllers</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../458/using-a-proxy-with-cucumber-webrat-and-mechanize/index.html">Using a Proxy with Cucumber, Webrat and Mechanize</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

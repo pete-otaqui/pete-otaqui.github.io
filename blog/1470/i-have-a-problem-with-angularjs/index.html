@@ -1,0 +1,76 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>I have a problem with AngularJS | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>I have a problem with AngularJS</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <div class="post-image">
+          <img src="../../wp-content/uploads/angular_problem.png" alt="I have a problem with AngularJS">
+        </div>
+        <p class="post-info">
+          Posted on 11/01/2013. By Pete Otaqui.
+        </p>
+        <p>It’s true – I have a problem with AngularJS.</p>
+        <p>I love the sound of AngularJS (well, apart from all the “superhero” stuff) – it looks like they’ve put a lot of thought into the framework and people who are into it seem to be convinced, but there’s one thing that really bugs me about the homepage
+          examples and prevents me from investing the time to find out more.</p>
+        <p>
+
+          <!-- more -->
+        </p>
+        <p>My problem is this part of one of the examples:</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">template:
+  '&lt;div class="tabbable"&gt;' +
+    '&lt;ul class="nav nav-tabs"&gt;' +
+      '&lt;li ng-repeat="pane in panes" ng-class="{active:pane.selected}"&gt;'+
+        '&lt;a href="" ng-click="select(pane)"&gt;{{pane.title}}&lt;/a&gt;' +
+      '&lt;/li&gt;' +
+    '&lt;/ul&gt;' +
+    '&lt;div class="tab-content" ng-transclude&gt;&lt;/div&gt;' +
+  '&lt;/div&gt;',
+replace: true
+</pre>
+        <p>What we can see here is AngularJS telling you to use a snippet of an object definition in javascript, specifically a template definition. Now, it’s one thing to invent a new syntax which sort of looks like mustache or handlebars, and it’s another
+          thing to add a whole load of new non-standard attributes to html. Lots of people do the former (I’m thinking particularly of the BBC’s internal “Spectrum” here) and Dojo offered the latter as a way of declaratively configuring widgets a long
+          time ago (and was lambasted by quite short sighted standardistas for it).</p>
+        <p>What bugs me with this example is both together, <em>buried inside a string</em> . I assume angular allows you to have external “templates” which would at least get you out of hell of quotation and escaping, but then you’ve also got the problem
+          that your templates are now separate but tied to very specific things in controllers.</p>
+        <p>I could be wrong, maybe this doesn’t lead you down a hard-to-read or hard-to-maintain path. But it smells like it would to me.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1594/the-super-quick-start-guide-to-yeoman-grunt-and-bower/index.html">The Super Quick Start Guide to Yeoman, Grunt and Bower</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1445/project-idea-cloud-storage-aggregator/index.html">Project idea: cloud storage aggregator</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

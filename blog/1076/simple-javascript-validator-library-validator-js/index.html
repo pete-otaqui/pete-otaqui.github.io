@@ -1,0 +1,128 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Simple Javascript Validator Library – Validator.js | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Simple Javascript Validator Library – Validator.js</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 14/08/2011. By Pete Otaqui.
+        </p>
+        <p>I had a need to do some data validation in javascript, and all the libraries I looked at seemed quite opinionated about *what* you were going to validate – i.e. form data – let alone the increase in server-side javascript in the last couple of
+          years. My data wasn’t directly tied to a form, so it didn’t quite seem worthwhile trying to shoe horn my needs into what the libraries expected, and I could also see a need for a validation library that could be adapted for Node.</p>
+        <p>Enter
+          <a href="https://pete-otaqui.github.com/Validator.js">Validator.js</a> .</p>
+        <p>Validator’s only dependency is on
+          <a href="http://documentcloud.github.com/underscore.js">underscore.js</a>  from Document Cloud.</p>
+        <p>Validator has two usage forms: the first for very quick and simple one-off cases:</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">// Simple use:
+var result
+result = Validator.isEmail('not_an_email');
+console.log(result); // false
+result = Validator.isEmail('joe@example.com');
+console.log(result); // true
+</pre>
+        <p>I found this on its own quite a lot more flexible than most of the form-driven libraries out there. However, I also wanted to be able to create more complex sets of validations to run on a piece of data. For that case, you create an instance of
+          Validator and use it’s add() method:</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">var result,
+    myValidator
+myValidator = new Validator();
+myValidator.add('unique');
+myValidator.add('minLength', 6);
+result = myValidator.validate( [1, 2, 3, 4, 5, 6, 6] );
+console.log(result); // false, the array is long enough but contains non-unique members
+</pre>
+        <p>This got me a fair bit closer to what I wanted, but you don’t know which part failed, so it’s harder to give reasonable feedback. I added a set of error messages to validator instances which gets populated after a call to validate():</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">var result,
+    myValidator
+myValidator = new Validator();
+myValidator.add('unique');
+myValidator.add('minLength', 6);
+myValidator.add('maxLength', 8);
+result = myValidator.validate( [1, 2, 3, 4, 5, 6, 6, 8, 9, 10] );
+console.log(result); // false, the array is long enough but contains non-unique members
+console.log(myValidator.errors);
+/*
+myValidator.errors == [
+    'The list must be made up of unique items',
+    'The list is too long'
+]
+*/
+</pre>
+        <p>Again, this is pretty good but even though Validator supports adding messages in any language you want and falling back (by default) to English (see the source code), default error messages still aren’t always what you need. I also added the ability
+          to set a custom error message per “validation”.</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">var result,
+    myValidator
+myValidator = new Validator();
+myValidator.add('unique').message('You are repeating yourself');
+myValidator.add('minLength', 6).message('Too tiny!');
+myValidator.add('maxLength', 8).message('Too bloated!');
+result = myValidator.validate( [1, 2, 3, 4, 5, 6, 6, 8, 9, 10] );
+console.log(result); // false, the array is long enough but contains non-unique members
+console.log(myValidator.errors);
+/*
+myValidator.errors == [
+    'You are repeating yourself',
+    'Too bloated!'
+]
+*/
+</pre>
+        <p>You can also chain calls to add() and message():</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">var result,
+    myValidator
+myValidator = new Validator();
+myValidator.add('unique').message('You are repeating yourself')
+    .add('minLength', 6).message('Too tiny!')
+    .add('maxLength', 8).message('Too bloated!');
+</pre>
+        <p>I’ve added some code which should make it easy to use this as a CommonJS AMD javascript module. In it’s default form you can just include it with a script tag.</p>
+        <p>If you’re interested in developing Validator itself, the project is tested with
+          <a href="http://pivotal.github.com/jasmine/">Jasmine</a>  and documented with
+          <a href="http://code.google.com/p/jsdoc-toolkit/">JSDoc</a> . Both of these can be run with Rake, and the easiest way to get setup is to use
+          <a href="http://gembundler.com/">Bundler</a> . Once you’ve got the dependencies you get three rake tasks:</p>
+        <pre class="brush: bash; title: ; notranslate" title=""># Start the jasmine server, and open http://localhost/blog:8888/ to run the test suite:
+$ rake jasmine
+# Start the jasmine server and also run a browser through the tests automatically:
+$ rake jasmine:ci
+# Generate the docs
+$ rake jsdoc
+</pre>
+        <p>If you fork the project and add any more validations, please also add tests and docs.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="http://localhost/blog/1079/stop-console-log-causing-errors-in-ie6-and-other-browsers/">Stop console.log causing errors in IE6 and other browsers</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1072/testing-remote-php-websites-with-capybara-cucumber-mechanize-selenium-2-webdriver-and-saucelabs/index.html">Testing remote (PHP) websites with Capybara, Cucumber, Mechanize, Selenium 2 Webdriver ... and SauceLabs</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

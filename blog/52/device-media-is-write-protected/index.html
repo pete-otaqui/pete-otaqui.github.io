@@ -1,0 +1,58 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Device Media Is Write Protected | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Device Media Is Write Protected</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 05/04/2007. By Pete Otaqui.
+        </p>
+        <p>Having recently bought usb memory key I was having trouble getting it to mount correctly on my Windows machine at work. It would occasionally return a ‘device media not recognized’ error on insertion, and sometimes would seemingly mount but never
+          display in My Computer. I downloaded the
+          <a href="http://h18000.www1.hp.com/support/files/serveroptions/us/download/23839.html">HP USB Drive Format tool</a>, which again sort of seemed to see the drive, but whenever I tried to format it I would get the ‘Device media is write protected’ error.</p>
+        <p>After a bit of searching and some guess work I realised that the key was being assigned a drive letter that was already in use by a network drive (we have a lot of network drives in the office, and I had run out of letters). The HP Utility was
+          trying to format the network drive!</p>
+        <p>The solution was to safely remove the key and power down completely. Then insert the key and reboot – accepting that Windows will warn you about not being to mount all network drives, since it will have already mounted the key drive. Once that’s
+          done you can assign whatever letter you DO have free, and then when you reboot Windows will remember the letter assignation and you are sorted for (un-)mounting to your heart’s content.</p>
+        <p>Possibly worth noting that the usb key worked flawlessly with my mac throughout.
+          <br>
+        </p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../53/beefy-font/index.html">Beefy Font</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../51/thou-shalt-not-read-nme/index.html">Thou Shalt Not Read NME</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

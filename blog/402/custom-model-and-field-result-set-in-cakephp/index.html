@@ -1,0 +1,89 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Custom Model and Field Result Set in CakePHP | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Custom Model and Field Result Set in CakePHP</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 06/02/2009. By Pete Otaqui.
+        </p>
+        <p>If you’re using CakePHP and want to perform a custom SQL query while forcing your results into an arbitrary Model-based array when they are given back to you, you could do a lot worse than using grigri’s (who is a fellow South Westerner and therefore
+          obviously a good bloke ;) DboMysqlEx (Mysql Extended) Class, or at least this particular part of it:</p>
+        <pre class="brush: php; title: ; notranslate" title="">&lt;?php
+require_once (LIBS . 'model' . DS . 'datasources' . DS . 'dbo' . DS . 'dbo_mysql.php');
+class DboMysqlEx extends DboMysql {
+   var $description = "MySQL DBO Driver - Extended";
+   // Override resultSet to allow for Model__field type aliases
+   function resultSet(&amp;$results) {
+		if (isset($this-&gt;results) &amp;&amp; is_resource($this-&gt;results) &amp;&amp; $this-&gt;results != $results) {
+			mysql_free_result($this-&gt;results);
+		}
+       $this-&gt;results =&amp; $results;
+       $this-&gt;map = array();
+       $num_fields = mysql_num_fields($results);
+       $index = 0;
+       $j = 0;
+       while ($j &lt; $num_fields) {
+           $column = mysql_fetch_field($results,$j);
+           if (!empty($column-&gt;table)) {
+               $this-&gt;map[$index++] = array($column-&gt;table, $column-&gt;name);
+           } else {
+               if (strpos($column-&gt;name, '__')) {
+                   $parts = explode('__', $column-&gt;name);
+                   $this-&gt;map[$index++] = array($parts[0], $parts[1]);
+               } else {
+                   $this-&gt;map[$index++] = array(0, $column-&gt;name);
+               }
+           }
+           $j++;
+       }
+   }
+}
+?&gt;
+</pre>
+        <p>This code, which overrides the default MySQL DBO, allows you to SELECT something AS Modelname__Fieldname (with a double underscore) and will end up populating your result set as you would like it to ($results[‘Modelname’][‘Fieldname’]).</p>
+        <p>In order to use a custom datasource, copy the code and save it as “/cake_dir/app/models/datasources/dbo/dbo_mysqlex.php” and edit your “/cake_dir/app/config/database.php” file so that it uses the “mysqlex” driver instead of plain old “mysql”.</p>
+        <p>This all came from a discussion on the excellent
+          <a href="http://groups.google.com/group/cake-php/browse_thread/thread/f823cc7f168cd619?hl=en">CakePHP Google Group</a> 
+        </p>
+        <p>Grigri posted
+          <a href="http://bin.cakephp.org/view/1781729779">a copy of his modified MySQL Extended DBO</a>  online if you want some more of his nice features like backtracing.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../415/page-optimisation-technique-build-two-rows-for-the-fold/index.html">Page Optimisation Technique - Build Two Rows For The Fold</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../398/selecting-a-different-table-column-if-the-original-record-is-null-in-mysql-using-ifnull/index.html">Selecting a Different Table Column if the Original Record is NULL in MYSQL Using IFNULL</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,80 @@
+
+html {
+  margin: 0;
+  padding: 0;
+}
+body {
+  /* Use Roboto if available, or try to use the system-ui font */
+  font-family: Roboto, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", OpenSans, "Helvetica Neue",
+    sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+pre, code {
+  font-family: Menlo, Consolas, Inconsolata, "OpenSans Mono", monospace;
+  background-color: #fdfcd1;
+}
+pre {
+    overflow-x: auto;
+    padding: 1em;
+}
+article {
+  flex-grow: 1;
+}
+header .container > *:first-child {
+  margin-bottom: 0;
+}
+footer {
+  margin: 1rem 0;
+  font-size: 80%;
+  color: rgba(0, 0, 0, 0.5);
+  text-align: right;
+}
+.post-info {
+  color: rgba(0, 0, 0, 0.5);
+  text-align: right;
+  margin-top: 0;
+}
+.container {
+  max-width: 800px;
+  width: calc(100% - 2em);
+  margin: 0 auto;
+}
+img {
+  max-width: 100%;
+}
+.alignleft {
+  float: left;
+  margin-right: 0.5em;
+}
+.striped {
+  width: 100%;
+  border-collapse: collapse;
+}
+.striped thead tr th {
+  border-bottom: 1px solid #999;
+}
+.striped tr:nth-child(even) {
+  background-color: #eee;
+}
+blockquote {
+  position: relative;
+}
+blockquote:before {
+  content: '“';
+  position: absolute;
+  font-size: 2em;
+  left: -0.5em;
+  top: -0.1em;
+  color: rgba(0, 0, 0, 0.5);
+}
+article h2 {
+  margin-top: 1.4em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}

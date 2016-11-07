@@ -1,0 +1,84 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sheaf – a little library for serial Promise management | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Sheaf – a little library for serial Promise management</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 24/03/2012. By Pete Otaqui.
+        </p>
+        <p>I’ve released
+          <a href="https://github.com/pete-otaqui/sheaf">sheaf</a>, a library for looping over promises in a non-concurrent fashion. It helps you treat async operations as though they were synchronous instead (but doesn’t “block”).</p>
+        <p>This is useful if you want to use a series of asynchronous functions on a list of initial items, but want one series to complete before the next one starts.</p>
+        <p><span id="more-1217"></span> </p>
+        <p>The use case I had which prompted writing the library was loading results from a database, generating a jsdom page from each result, and taking a screenshot of each one. With 8000 results, I really didn’t want to try running them all concurrently,
+          but since jsdom in asynchronous, I actually wanted to wait for each item to resolve before moving on to the next.</p>
+        <p>Sheaf is available via
+          <a href="http://npmjs.org">npm</a>, and also works fine in browsers. It depends on
+          <a href="https://github.com/pete-otaqui/bond">bond</a>  to provide it’s returned promise.</p>
+        <p>The API looks like this:</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">
+var aList = ['/one.json', '/two.json']
+var fn1Async = function() { /* return a promise */ }
+var fn2Async = function() { /* return a promise */ }
+var fn3Sync = function() { /* return a value */ }
+var fn4Async = function() { /* return a promise */ }
+sheaf( aList, fn1Async, fn2Async, fn3Sync, fn4Async );
+</pre>
+        <p>The first argument to sheaf is the list of things you want to loop over. Subsequent arguments are functions that either return promises or values. The first such function is given each items from the array as sole argument, each function after
+          that is given the return value (or promise resolution arguments) from the previous function as parameters.</p>
+        <p>Each complete cycle of the functions is run through before started again on the next member of the initial array.</p>
+        <p>A diagram might help:</p>
+        <p>
+          <img src="https://docs.google.com/drawings/pub?id=1TggGPBZUpjIygkfsE4A98Udc0Obx8wnjD-j4034z-Og&amp;w=619&amp;h=217" alt="Sheaf's flow">
+        </p>
+        <p>Sheaf itself returns a promise, which will notify on each iteration and resolve when all iterations are complete, e.g.</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">
+sheaf( aList, fn1Async, fn2Async, fn3Sync, fn4Async )
+  .progress(function() {console.log('one loop completed', arguments})
+  .done(function(newList) {console.log('all loops completed', newList)});
+</pre>
+        <p>Since sheaf and bond are designed to work with multiple arguments, the “newList” with which the promise is resolved will be an array of arrays (one per item in the initial aList);</p>
+        <p>Sheaf can be useful if you want to perform even a single async function over and over again but wait for completion each time before running again. It’s main purpose though is to loop over asynchronous chains in a non-concurrent way. You can imagine
+          that trying to load 8000 URLs, create 8000 DOMs pages in memory and take 8000 screenshots all at once is not a very good idea!</p>
+        <p>However, you probably don’t want to use this if you are responding to HTTP calls, since you never know how long these operations will take. It would make more sense to fire off a worker process, and then return much faster.</p>
+        <p>As I have the time I’ll be trying to write up some more examples for sheaf, so stay tuned.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1227/a-google-glass-darkly/index.html">A Google Glass, Darkly</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1190/bond-a-simple-promises-library-available-with-npm/index.html">Bond - a simple Promises library, available with npm</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

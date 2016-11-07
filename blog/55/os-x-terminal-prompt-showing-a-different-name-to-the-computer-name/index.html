@@ -1,0 +1,58 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OS X Terminal Prompt showing a different name to the Computer Name | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>OS X Terminal Prompt showing a different name to the Computer Name</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 10/04/2007. By Pete Otaqui.
+        </p>
+        <p>My mac terminal came with a default prompt which looked like this:</p>
+        <pre>Vigor:~ pete$ </pre>
+        <p>I had changed my computer name to something I preferred, which works fine for browsing to your own apache server, but this did not have any effect on thebash prompt. I also wasn’t (yet) interested in customising the prompt with a bashrc file as
+          suggested all over the web.</p>
+        <p>It turned out that the terminal was showing the hostname of the machine, not the computer name. You can set the hostname with the following snippet:</p>
+        <pre>$ sudo hostname whatever-you-want</pre>
+        <p>This would give you a prompt like this:</p>
+        <pre>whatever-you-want:~ pete$</pre>
+        <p><strong>UPDATE:</strong>  the above method does not <em>permanently</em>  change the hostname. It will revert once you reboot. I’ve tried another method which seems better:</p>
+        <pre>$ sudo scutil --set HostName whatever-you-want.example.com</pre>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../56/cakephp-without-mod_rewrite/index.html">CakePHP without mod_rewrite</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../54/html-5/index.html">HTML 5</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

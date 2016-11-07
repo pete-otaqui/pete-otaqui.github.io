@@ -1,0 +1,76 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Custom User Agent with Cucumber Tests and Webrat in Mechanize Mode | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Custom User Agent with Cucumber Tests and Webrat in Mechanize Mode</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 08/03/2010. By Pete Otaqui.
+        </p>
+        <p>It’s pretty straightforward to set a custom user agent with mechanize if you’re using it directly,
+          <a href="http://www.kickasslabs.com/2009/03/31/quick-hits-setting-the-user-agent-header-in-webrat/">KickAssLabs has a good example</a> .</p>
+        <p>If you’re using Mechanize through Webrat though, things are a little different. The nice thing though, is that you can do this in a step definition – allowing features to be based on different browser scenarios (this is great if you’re developing
+          across devices).</p>
+        <p>First off there are two accessors of interest in mechanize, “user_agent” and “user_agent_alias”. The former is fairly self evident and lets you define the user agent at will, the latter gives you shortcut access to a list of common user agents
+          baked into mechanize. You can see that list in
+          <a href="http://github.com/tenderlove/mechanize/blob/master/lib/mechanize.rb#L48">the mechanize.rb source</a> . It contains some desktop browsers, the iPhone and the default Mechanize UA strings.</p>
+        <p>If you’re happy with the default alias list, you can just write a step definition like this:</p>
+        <pre class="brush: ruby; title: ; notranslate" title="">Given /^I am using the "(.*)" browser$/ do |browser|
+  webrat.adapter.mechanize.user_agent_alias = browser 
+end
+</pre>
+        <p>And then you can use this in your features:</p>
+        <pre class="brush: plain; title: ; notranslate" title="">Given I am using the "iPhone" browser
+When I visit the home page
+Then I should see "You are using an iPhone!"
+</pre>
+        <p>If you want to be able to specify your own UA strings, and as I said this is especially likely if you are developing cross-device applications where capabilities are important, then you can just use your own hash instead, and set “user_agent”
+          rather than “user_agent_alias”:</p>
+        <pre class="brush: ruby; title: ; notranslate" title="">Given /^I am using the "(.*)" browser$/ do |browser|
+  UA_ALIASES = {
+    "Nokia N95" =&gt; "Mozilla/5.0 (SymbianOS/9.2; .....",
+    "Palm Pre" =&gt; "Mozilla/5.0 (webOS/1.0; ....."
+  }
+  webrat.adapter.mechanize.user_agent = UA_ALIASES[browser] 
+end
+</pre>
+        <p>With a little tweaking you could use both the included list and, if the string from your feature isn’t there, look in a custom list too.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../585/salmon-stew-with-honey-mustard-and-thyme/index.html">Salmon stew with honey, mustard and thyme</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../539/complete-list-of-special-google-chrome-urls/index.html">Complete List of Special Google Chrome URLs</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

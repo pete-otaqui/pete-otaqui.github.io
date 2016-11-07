@@ -1,0 +1,418 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Digital Ocean should fix their API – here’s how | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Digital Ocean should fix their API – here’s how</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 02/10/2013. By Pete Otaqui.
+        </p>
+        <p>I love Digital Ocean – they offer great value for money, excellent support and a really refreshing and clean interface. However their API sucks, and this is something they should probably try and deal with if they want to expand beyond individuals
+          or small companies into providing services for larger applications and corporates.</p>
+        <p><span id="more-1651"></span> </p>
+        <h2>Versioning the API</h2>
+        <p>First off, I think they should <em>version their API</em> . Some people think that
+          <a href="http://www.devx.com/blog/never-version-your-api.html">REST precludes versioning in a URL</a>  but personally I don’t agree. RESTful APIs aid in discovery, but do not make it automatic, and adding a version at least allows concurrent incompatible implementations – especially important when you are
+          still developing a service. The devx article linked to there suggests that “/v1/” or similar in an API URL is a bad idea, but doesn’t say that you can’t provide such versions from subdomains, so I guess that would appease the author.</p>
+        <p>Let’s suggest then that they could have all API requests to URLs like this:</p>
+        <p><code><strong>https://api-1.digitalocean.com/</strong> </code></p>
+        <p>Allowing them to provide a different API in the future without breaking existing clients, such as:</p>
+        <p><code><strong>https://api-2.digitalocean.com/</strong> </code></p>
+        <p>There are other ways of adding versioning, within the url (i.e. <code>https://api.digitalocean.com/v1/</code>) but that ship has mostly sailed for DO with their current implementation in place, or by requiring extra header information to specify
+          API version in requests.</p>
+        <h2>Be at REST</h2>
+        <p>Assuming it’s now possible to create a new version of the API, let’s look at what that might contain (<em>spoiler: more than only GET requests</em> ).</p>
+        <p>I’m going to apply a more correctly RESTful style of API using the appropriate HTTP verbs to their current API actions – I’m not going to suggest any new features.</p>
+        <h3>Droplets</h3>
+        <table class="striped">
+          <thead>
+            <tr>
+              <th width="10%">Method</th>
+              <th width="20%">URL</th>
+              <th width="70%">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/droplets</td>
+              <td class="description">
+                <p class="title">Show All Active Droplets</p>
+                <p> As original <code>/droplets</code>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>POST</span> </td>
+              <td class="url">/droplets</td>
+              <td class="description">
+                <p class="title">New Droplet</p>
+                <p> As original <code>/droplets/new</code>, but current request parameters sent as a JSON post body:
+                </p><pre><code>{
+  "name": "droplet_name",
+  "size": "size_id",
+  "image_id": "image_id",
+  "region_id": "region_id",
+  "ssh_key_ids": ["ssh_key_id1", "ssh_key_id2"],
+  "private_networking": true
+}</code></pre>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/droplets/:droplet_id</td>
+              <td class="description">
+                <p class="title">Show Droplet</p>
+                <p> As original <code>/droplets/:droplet_id</code>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/droplets/:droplet_id/actions</td>
+              <td class="description">
+                <p class="title">Get a list of actions available on this server</p>
+                <p> Lists the actions available, i.e. <code>{"actions": ["power_off", "resize", "password_reset"]</code> etc. Available actions are context-sensitive, i.e. “power_off” is not supplied if the droplet is already powered off.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>POST</span> </td>
+              <td class="url">/droplets/:droplet_id/actions</td>
+              <td class="description">
+                <p class="title">Perform an action on a droplet. The action and parameters are provided in the post body, i.e.:</p>
+                <ul>
+                  <li>reboot (<code>{"action": "reboot"}</code>)</li>
+                  <li>power_cycle (<code>{"action": "power_cycle"}</code>)</li>
+                  <li>shutdown (<code>{"action": "shutdown"}</code>)</li>
+                  <li>power_off (<code>{"action": "power_off"}</code>)</li>
+                  <li>power_on (<code>{"action": "power_on"}</code>)</li>
+                  <li>password_reset (<code>{"action": "password_reset"}</code>)</li>
+                  <li>resize (<code>{"action": "resize", "size": "size_id"}</code>)</li>
+                  <li>restore (<code>{"action": "restore", "image_id": "image_id"}</code>)</li>
+                  <li>rebuild (<code>{"action": "restore", "image_id": "image_id"}</code>)</li>
+                  <li>backups (<code>{"action": "backups", "backups": true}</code>)</li>
+                  <li>rename (<code>{"action": "rename", "name":"new name"}</code>)</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>DELETE</span> </td>
+              <td class="url">/droplets/:droplet_id</td>
+              <td class="description">
+                <p class="title">Destroy a droplet</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/droplets/:droplet_id/snapshots</td>
+              <td class="description">
+                <p class="title">List Snapshots</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>POST</span> </td>
+              <td class="url">/droplets/:droplet_id/snapshots</td>
+              <td class="description">
+                <p class="title">Create Snapshot</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/droplets/:droplet_id/snapshots/:snapshot_id</td>
+              <td class="description">
+                <p class="title">Show Snapshot</p>
+                <p> (NB – equivalent to <code>GET /images/:snapshot_id</code>)
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>DELETE</span> </td>
+              <td class="url">/droplets/:droplet_id/snapshots/:snapshot_id</td>
+              <td class="description">
+                <p class="title">Delete Snapshot</p>
+                <p> (NB – equivalent to <code>DELETE /images/:snapshot_id</code>)
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/droplets/:droplet_id/backups</td>
+              <td class="description">
+                <p class="title">List Backups</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/droplets/:droplet_id/backups/:backup_id</td>
+              <td class="description">
+                <p class="title">Show Backup</p>
+                <p> (NB – equivalent to <code>GET /images/:backup_id</code>)
+                </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>Regions</h3>
+        <table class="striped">
+          <thead>
+            <tr>
+              <th width="10%">Method</th>
+              <th width="20%">URL</th>
+              <th width="70%">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/regions</td>
+              <td class="description">
+                <p class="title">List regions</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>Images</h3>
+        <table class="striped">
+          <thead>
+            <tr>
+              <th width="10%">Method</th>
+              <th width="20%">URL</th>
+              <th width="70%">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/images</td>
+              <td class="description">
+                <p class="title">List Images</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>PUT</span> </td>
+              <td class="url">/images/:image_id</td>
+              <td class="description">
+                <p class="title">Transfer Image</p>
+                <p> Supply <code>{"region_id": "region_id"}</code> in the post body.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>DELETE</span> </td>
+              <td class="url">/images/:image_id</td>
+              <td class="description">
+                <p class="title">Destroy Image</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>SSH Keys</h3>
+        <table class="striped">
+          <thead>
+            <tr>
+              <th width="10%">Method</th>
+              <th width="20%">URL</th>
+              <th width="70%">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/ssh_keys</td>
+              <td class="description">
+                <p class="title">List SSH Keys</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>POST</span> </td>
+              <td class="url">/ssh_keys</td>
+              <td class="description">
+                <p class="title">Create SSH Key</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/ssh_keys/:ssh_key_id</td>
+              <td class="description">
+                <p class="title">Show SSH Key</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>PUT</span> </td>
+              <td class="url">/ssh_keys/:ssh_key_id</td>
+              <td class="description">
+                <p class="title">Update SSH Key</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>DELETE</span> </td>
+              <td class="url">/ssh_keys/:ssh_key_id</td>
+              <td class="description">
+                <p class="title">Destroy SSH Key</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>Sizes</h3>
+        <table class="striped">
+          <thead>
+            <tr>
+              <th width="10%">Method</th>
+              <th width="20%">URL</th>
+              <th width="70%">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/sizes</td>
+              <td class="description">
+                <p class="title">List sizes</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>Domains</h3>
+        <table class="striped">
+          <thead>
+            <tr>
+              <th width="10%">Method</th>
+              <th width="20%">URL</th>
+              <th width="70%">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/domains</td>
+              <td class="description">
+                <p class="title">List Domains</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>POST</span> </td>
+              <td class="url">/domains</td>
+              <td class="description">
+                <p class="title">Create Domain</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/domains/:domain_id</td>
+              <td class="description">
+                <p class="title">Show Domain</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>DELETE</span> </td>
+              <td class="url">/domains/:domain_id</td>
+              <td class="description">
+                <p class="title">Destroy Domain</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/domains/:domain_id/records</td>
+              <td class="description">
+                <p class="title">List Domain Records</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>POST</span> </td>
+              <td class="url">/domains/:domain_id/records</td>
+              <td class="description">
+                <p class="title">Create Domain Record</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/domains/:domain_id/records/:record_id</td>
+              <td class="description">
+                <p class="title">Show Domain Record</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>PUT</span> </td>
+              <td class="url">/domains/:domain_id/records/:record_id</td>
+              <td class="description">
+                <p class="title">Update Domain Record</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="method"><span>DELETE</span> </td>
+              <td class="url">/domains/:domain_id/records/:record_id</td>
+              <td class="description">
+                <p class="title">Destroy Domain Record</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>Events</h3>
+        <table class="striped">
+          <thead>
+            <tr>
+              <th width="10%">Method</th>
+              <th width="20%">URL</th>
+              <th width="70%">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="method"><span>GET</span> </td>
+              <td class="url">/events/:event_id</td>
+              <td class="description">
+                <p class="title">Show Event</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p>In this process I’ve tried to take a pragmatic approach to the API. You could easily make the case that to be more theoretically correct a lot of the droplet “actions” should be done with a PUT request to <code>/droplets/:droplet_id</code> and
+          while I think that would work fine, it seemed to me that splitting out the actions to a different URL made things a bit more obviously with less likelihood of messing up with trying to PUT too many things at once.</p>
+        <p>I do think at least this much work on the API is worthwhile – I’m somewhat terrified of GET requests that perform actions (especially if those actions might cost me money). It’s nice to write scripts against APIs, and a very nice safety belt if
+          you know that you’re only doing (safe) GET requests in a loop or something.</p>
+        <p>There are a couple of extra features I would like to see DO to implement:</p>
+        <ul>
+          <li><strong>Better Auth</strong>  so we don’t have to include the client_id and api_key <em>right there in the URL</em> .</li>
+          <li>Although this isn’t related to the API, I’d love to see <strong>custom data applied to new droplets</strong>  in the same way that AWS / OpenStack et al manage it. So I can apply a small amount of custom data to dynamically created droplets without
+            having to the lengths of making lots of images or some other out-of-bound system to manage config data.</li>
+        </ul>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1652/setting-up-a-virtualbox-virtual-machine-for-web-development-with-multiple-sites-using-mod_vhost_alias-and-virtualdocumentroot/index.html">Setting up a Virtualbox Virtual Machine for Web Development with Multiple Sites using mod_vhost_alias and VirtualDocumentRoot</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1648/best-tasks-package-for-sublime-text-3-plaintext/index.html">Best Tasks Package for Sublime Text 3 - PlainText</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

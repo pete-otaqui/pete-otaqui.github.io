@@ -1,0 +1,180 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CSSP: Loading CSS with Javascript – and getting an onload callback. | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>CSSP: Loading CSS with Javascript – and getting an onload callback.</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 28/09/2010. By Pete Otaqui.
+        </p>
+        <p>It seems fairly straightforward to require CSS with Javascript. The most obvious method that I thought of was creating a &lt;link&gt; tag and appending it to the head of the document. An alternative would be to load the text of the css file with
+          an ajax XHR call, and then inject that into a &lt;style&gt; tag.</p>
+        <p>These are both fine for most cases, but what about a situation where you have a hard dependency on the css for the javascript to work correctly? You could take a best-guess at a wait time for the CSS to load, or even set the XHR to be synchronous
+          – however both of these are very poor for both actual and perceived performance of your page (and the former may simply fail).</p>
+        <p>When might this be the case? Let’s say you have some asynchronously loaded javascript that is intended to create a widget on the page, something like this (which assumes you are using jQuery as your dom library):</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">
+function moveLargePanels() {
+    // make a panel container for large panels
+    $('&lt;div id="largePanelContainer"&gt;&lt;/div&gt;')
+        .appendTo('body');
+    $('.panel').each( function(i, panel) {
+        if ( panel.outerWidth() &gt; 300 ) {
+            panel.appendTo('#largePanelContainer');
+        }
+    }
+}
+</pre>
+        <p>And some corresponding CSS:</p>
+        <pre class="brush: css; title: ; notranslate" title="">.panel {
+    border:1px solid #000;
+    padding: 20px;
+}
+</pre>
+        <p>The idea here is that, since there is some interaction between the logic in the javascript (a test for the “outerWidth”) and the styling in the CSS (setting the padding) that the javascript can only work correctly once the CSS has been loaded
+          and applied.</p>
+        <p>This should be fine right? Start the javascript and the css loading, and have events attached to the load of each letting you know when everything is ready and it’s safe to fire “moveLargePanels()”. Wrong, or at least tricky, and essentially impossible
+          if the CSS is loaded from a different domain to the hosting webpage.</p>
+        <p>You can get James Burke’s excellent description of this problem here:
+          <br>
+          <a href="http://requirejs.org/docs/faq-advanced.html#css">http://requirejs.org/docs/faq-advanced.html#css</a> 
+          <br> And a first pass at solving this (in some browsers) here:
+          <br>
+          <a href="http://bugs.dojotoolkit.org/ticket/5402">http://bugs.dojotoolkit.org/ticket/5402</a> 
+        </p>
+        <p>Burke mentions a using a “well known” style rule to test whether the style is loaded. I suggest a standard pattern for the rule, and also a mechanism for dynamically setting it.</p>
+        <h2>Enter CSSP</h2>
+        <p>You may have heard of
+          <a href="http://remysharp.com/2007/10/08/what-is-jsonp/">JsonP</a>  – a way of serving dynamically generated JSON which is padded with a method call (the method name is supplied in the query string of the URL), which allows for cross domain loading of javascript. The idea behind CSSP is similar – it
+          defines a pattern for loading css cross domain. Instead of wrapping in a callback though, we can use the URL query string mechanism to supply the special “test rule” that we use.</p>
+        <h3>Dynamic Rule Pattern</h3>
+        <p>Given this url:</p>
+        <p>http://someserver.com/stylefile.css?cssp=123456</p>
+        <pre class="brush: plain; title: ; notranslate" title="">.panel { ... }
+.largePanelsContainer { .. }
+/* and the special rule: */
+cssp { zIndex:123456; }
+</pre>
+        <p>So, in whatever loader we want to build, we can add something like this (n.b. this isn’t tested code):</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">var cssp_counter = 0;
+function loadCss(url, callback, className, zIndex) {
+    // create a counter for special class names, so they are unique
+    className = className || 'cssp' + (cssp_counter++);
+    zIndex = zIndex || 123456;
+    url = url + '?' + className + '=' + zIndex;
+    $('&lt;link&gt;')
+        .attr({
+            rel: "stylesheet",
+            type: "text/css",
+            href: url
+        .appendTo('head');
+    // append a dummy div to the body for the test
+    var div = $('&lt;div&gt;&lt;/div&gt;')
+        .addClass(className)
+        .appendTo('body');
+    // now poll for the z-index value:
+    var cssp_interval = setInterval( function() {
+        // if the zIndex is applied, we know the css has loaded
+        if ( div.css('zIndex') == zIndex ) {
+            div.remove();
+            // callback:
+            callback();
+            clearInterval( cssp_interval );
+        }
+    }, 100);
+}
+</pre>
+        <p>The code above to do the loading and fire a callback is very naive. It would be much better to have an event that can have listeners added, and to have some tests and some failure management like a maximum timeout.</p>
+        <h3>Default Rule Pattern</h3>
+        <p>This obviously presupposes that the CSS is dynamically generated to some degree, even just by adding the special rule to an otherwise static file. I think that an alternative to the performance-conscious would be a “default” special rule, based
+          on the css filename. This needs some thought, and could well be tied to a build-step in your deployment process (you do have one, right?). The pattern comes in two parts:</p>
+        <ul>
+          <li>There is a standard zIndex that is always used.</li>
+          <li>The filename includes the “special class name” that is used within.</li>
+        </ul>
+        <p>For example:</p>
+        <p>Given the file: <strong>styles.fhddgso9j.css</strong> </p>
+        <pre class="brush: css; title: ; notranslate" title="">.someclass { ... }
+.otherclass { ... }
+/* and the special rule */
+.fhddgso9j { z-index: 123456; }
+</pre>
+        <p>The javascript to go alone with this might look something like:</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">var cssp_counter = 0;
+function loadCss(url, callback) {
+    // create a counter for special class names, so they are unique
+    className = getSpecialClassName(url);
+    zIndex = 123456;
+    $('&lt;link&gt;')
+        .attr({
+            rel: "stylesheet",
+            type: "text/css",
+            href: url
+        .appendTo('head');
+    // append a dummy div to the body for the test
+    var div = $('&lt;div&gt;&lt;/div&gt;')
+        .addClass(className)
+        .appendTo('body');
+    // now poll for the z-index value:
+    var cssp_interval = setInterval( function() {
+        // if the zIndex is applied, we know the css has loaded
+        if ( div.css('zIndex') == zIndex ) {
+            div.remove();
+            // callback:
+            callback();
+            clearInterval( cssp_interval );
+        }
+    }, 100);
+}
+function getSpecialClassName(url) {
+  // get just the filename, e.g. "styles.9ufosdfij.css"
+  var filename = url.substring( url.lastIndexOf('/')+1, url.length);
+  // split on the "." marks
+  var parts = filename.split('.');
+  // assume it will be the second-to-last part (since the last should be "css")
+  var className = parts[ parts.length-2 ];
+  return className;
+}
+</pre>
+        <p>As noted above, this naive, untested code.</p>
+        <h2>Wrapping Up</h2>
+        <p>Ideally I’d like any “css loader” to use actual browser events (or properties) where possible, and to fallback on this setup as a last resort.</p>
+        <p>If I get time I’ll implement this and put the code on github. Please do get in touch if you’d like to pair on this!</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../919/started-work-on-jquery-ui-modal-widget/index.html">Started work on jQuery UI Modal widget</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../697/review-of-simplicity-is-highly-overrated/index.html">Review of "Simplicity is Highly Overrated"</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

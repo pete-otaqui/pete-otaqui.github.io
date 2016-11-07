@@ -1,0 +1,184 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Setting up a Virtualbox Virtual Machine for Web Development with Multiple Sites using mod_vhost_alias and VirtualDocumentRoot | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Setting up a Virtualbox Virtual Machine for Web Development with Multiple Sites using mod_vhost_alias and VirtualDocumentRoot</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 04/10/2013. By Pete Otaqui.
+        </p>
+        <p>Hopefully as a developer you are using a virtual machine for local development. This makes sense unless your target platform is very much the same as your working one – not the case for a lot of people developing LAMP / Ruby / Python / Node. However,
+          this can still present problems when you want to have multiple websites running and don’t want the sacrifice of putting everything in a subdirectory. I’m going to explain my setup which uses subdomains for a virtual machine, and apache’s vhost_alias
+          module with the VirtualDocumentRoot directive.</p>
+        <p>You will be able to create a directory called “super/” to hold your project, and immediately browse to it using the subdomain “http://super.virtualbox.me” without any further configuration – neat!</p>
+        <p><span id="more-1652"></span> </p>
+        <p>Ready made stacks for Window and the Mac, like XAMPP and WAMP, are alright but you still aren’t using the platform that you will likely be deploying to, to whit: Linux.</p>
+        <p>I run a single VirtualBox VM for most LAMP development, and use this machine to serve the various sites I want to work on. All the actual files reside on my host computer, and are shared to the VM. My VM runs Ubuntu and the host is OS X, so these
+          instructions are guided toward that.</p>
+        <h2>Step 1, Create a VM and install server software</h2>
+        <p>First off – create a new Ubuntu VM and install the OS, to your taste. I actually use the desktop version of Ubuntu, since there are some GUI programs I like to use and this is fine for me. For what it’s worth, I also assign Virtualbox and VMs
+          to a second OS X “space”, so they don’t get in the way of my main workflow which is all on the host machine.</p>
+        <p>With Ubuntu adding the software we need is easy:</p>
+        <pre class="brush: bash; title: ; notranslate" title="">$ sudo apt-get install apache2 mysql-client mysql-server php5 php5-mysql
+</pre>
+        <h2>Step 2: Setup the network</h2>
+        <p>So far so good. By default though, Virtualbox VMs can’t communicate directly with the host machine – they get NAT which allows them to out to the internet instead. You will probably want to create one host-only network for general VMs, and a dedicated
+          one which is only used by this newly created development machine, since you can then control the IP addresses without messing with the defaults of others.</p>
+        <p>Open up Virtualbox and get into the preferences (make sure this is the Virtualbox preferences, not the individual machine preferences). In the “Network” panel, create 2 “host only” networks, by default these will be called <code>vboxnet0</code>          and <code>vboxnet1</code>. Leave the defaults of <code>vboxnet0</code> as they are, we’re going to use <code>vboxnet1</code> for the development machine.</p>
+        <p>
+          <img class="size-full wp-image-1707 alignnone" alt="vhost_alias_1_vbox_network" src="../../wp-content/uploads/vhost_alias_1_vbox_network.png" width="300" height="217">
+        </p>
+        <p>In the Adapter pane of the <code>vboxnet1</code> editor, choose the following settings:</p>
+        <p>
+          <img class="size-full wp-image-1708 alignnone" alt="vhost_alias_2_vboxnet1_adapter" src="../../wp-content/uploads/vhost_alias_2_vboxnet1_adapter.png" width="300" height="217">
+        </p>
+        <ul>
+          <li>IPv4 Address: 192.168.201.1</li>
+          <li>IPv4 Network Mask: 255.255.255.0</li>
+        </ul>
+        <p>And in the DHCP pane, these:</p>
+        <p>
+          <img class="alignnone size-full wp-image-1709" alt="vhost_alias_3_vboxnet1_dhcp" src="../../wp-content/uploads/vhost_alias_3_vboxnet1_dhcp.png" width="300" height="219">
+        </p>
+        <ul>
+          <li>Enable Server: checked</li>
+          <li>Server Address: 192.168.201.100</li>
+          <li>Server Mask: 255.255.255.0</li>
+          <li>Lower Bound Address: 192.168.201.101</li>
+          <li>Upper Bound Address: 192.168.201.254</li>
+        </ul>
+        <p>Since we’re only going to have one machine on this network, we can use DHCP instead of setting a fixed IP, and still rely on the fact that it will always be <code>192.168.201.101</code>. There’s a bonus coming up later in this regard :)</p>
+        <p>Make sure the VM is turned off, and then open up it’s settings. In the network panel there, you want to make sure that it has two network adapters – one for the host-only network we just created and a secondary one for NAT so that the VM has access
+          out to the internet.</p>
+        <p>For “Adapter 1” choose the following:</p>
+        <p>
+          <a href="../../wp-content/uploads/vhost_alias_4_vmnetwork_adapter_1.png">
+            <img class="alignnone size-full wp-image-1710" alt="vhost_alias_4_vmnetwork_adapter_1" src="../../wp-content/uploads/vhost_alias_4_vmnetwork_adapter_1.png" width="300" height="247">
+          </a> 
+        </p>
+        <ul>
+          <li>Enable Network Adapter: checked</li>
+          <li>Attached to: Host-only Adapter</li>
+          <li>Name: vboxnet1</li>
+          <li>Cable connected: checked</li>
+        </ul>
+        <p>For “Adapter 2” choose the following:</p>
+        <p>
+          <a href="../../wp-content/uploads/vhost_alias_5_vmnetwork_adapter_2.png">
+            <img class="alignnone size-full wp-image-1711" alt="vhost_alias_5_vmnetwork_adapter_2" src="../../wp-content/uploads/vhost_alias_5_vmnetwork_adapter_2.png" width="300" height="248">
+          </a> 
+        </p>
+        <ul>
+          <li>Enable Network Adapter: checked</li>
+          <li>Attached to: NAT</li>
+          <li>Cable connected: checked</li>
+        </ul>
+        <p>Note – I had trouble with some of this if the host-only adapter wasn’t the <em>first</em>, i.e. you want Adapter 1 to be attached to the host only network and Adapter 2 to be attached to NAT.</p>
+        <h2>Step 3: Access the Host from the Guest</h2>
+        <p>The default Shared Folders that you get with Virtualbox Guest Additions kind of suck. I use SSHFS to share files since I’ve actually found this much easier to manage the Samba / CIFS. To to this you will need to enable “Remote Login” in the OS
+          X System Preferences / Sharing panel.</p>
+        <p>Check that you’ve done this correctly – get into a terminal in the ubuntu guest virtual machine, and try SSHing into the (in my case Mac) host. Note that, because of how we setup the host-only network, the IP of the host machine from the guest’s
+          point of view is <code>192.168.201.1</code>.</p>
+        <pre class="brush: bash; title: ; notranslate" title="">$ ssh USERNAME@192.168.201.1
+</pre>
+        <p>Hopefully that worked, and now you need to setup SSH key-based logins instead of requiring a password. In the Guest:</p>
+        <pre class="brush: bash; title: ; notranslate" title="">user@guest $ ssh USERNAME@192.168.201.1
+</pre>
+        <p>Then you’ll need to install SSHFS in the Ubuntu virtual machine (accept the defaults for the first command and do not enter a passphrase). Run this on the GUEST:</p>
+        <pre class="brush: bash; title: ; notranslate" title="">user@guest $ ssh-keygen -t rsa
+user@guest $ cat ~/.ssh/id_rsa.pub
+</pre>
+        <p>Copy the output of the second command (the public part of the key) and add it to the <code>authorized_keys</code> file. Find, or quite likely create, the <code>~/.ssh/authorized_keys</code> on the host (I’m making sure the permissions are correct
+          here, and using the mac <code>pbpaste</code> command … use any text editor you prefer). On the HOST:</p>
+        <pre class="brush: bash; title: ; notranslate" title="">user@host $ touch ~/.ssh/authorized_keys
+user@host $ chmod 600 ~/.ssh/authorized_keys
+user@host $ pbpaste &gt;&gt; ~/.ssh/authorized_keys
+</pre>
+        <p>Try logging into the host from the guest to the host again to check that you no longer need a password:</p>
+        <pre class="brush: bash; title: ; notranslate" title="">user@guest $ ssh USERNAME@192.168.201.1
+</pre>
+        <h2>Step 4: Mount an SSHFS share</h2>
+        <p>On my host machine I have use the folder /Users/pete/VirtualWWW to keep all the projects I want to serve, so make that directory on the host (obviously use your own username!)</p>
+        <p>Then add this to the <code>/etc/fstab</code> file on the guest (it’s all one line):</p>
+        <pre class="brush: bash; title: ; notranslate" title="">sshfs#pete@192.168.201.1:/Users/pete/VirtualWWW /var/www fuse comment=sshfs,defaults,idmap=user,allow_other,uid=33,gid=33,transform_symlinks,noauto,users,exec,BatchMode=yes,nonempty 0 0
+</pre>
+        <p>Note the following features: mounts at /var/www, makes the mount owned by the www-data user and group (uid and gid 33), doesn’t auto mount at boot.</p>
+        <p>Having done this, you should now be able to mount the host folder in the guest! Make sure the ~/VirtualWWW folder has something in it, and then run this on the guest:</p>
+        <pre class="brush: bash; title: ; notranslate" title="">user@guest $ sudo mount /var/www
+user@guest $ ls -l /var/www
+</pre>
+        <p>Hopefully you’ll see whatever you added to VirtualWWW and that it’s owned by www-data. Now we need to automatically mount this when we boot, but after the network has come up. I found a
+          <a href="http://ubuntuforums.org/showthread.php?t=430312">script called “mountsshfs”</a>  and I use a slightly modified version which you can find here:
+          <a href="https://gist.github.com/pete-otaqui/6822228">https://gist.github.com/pete-otaqui/6822228</a> .</p>
+        <p>Copy the contents of my mountsshfs to <code>/etc/network/if-up.d/mountsshfs</code> in the guest. Also get the <code>unmountsshfs</code> from the original thread, and copy that to <code>/etc/network/if-down.d/umountsshfs</code>. Make sure both
+          files are executable and owned by <code>root</code>.</p>
+        <p>Reboot the guest and you should now find that the share is automatically mounted at /var/www.</p>
+        <h2>Step 5: Configure Apache with mod_vhost_alias and VirtualDocumentRoot</h2>
+        <p>OK, we can now write code on the host and see it in the guest. Now let’s configure Apache so that every directory in our share equates to a subdomain, which we do by using the vhost_alias module and the VirtualDocumentRoot directive.</p>
+        <p>Create the file <code>/etc/apache2/sites-available/virtualbox</code> and add the following content:
+          <br>
+          <code></code></p>
+        <pre>&lt;VirtualHost *:80&gt;
+        ServerAdmin webmaster@localhost
+        UseCanonicalName Off
+        VirtualDocumentRoot    /var/www/%1/public
+        LogLevel debug
+        &lt;Directory /var/www&gt;
+                AllowOverride All
+                Order allow,deny
+                allow from all
+        &lt;/Directory&gt;
+&lt;/VirtualHost&gt;</pre>
+        <p>Note that I’ve specified that each site’s public directory is actually a folder called “/public” inside the specific subdirectory. More and more frameworks expect you to separate library code from publicly available code, so this is a good idea.
+          The <code>%1</code> used in the VirtualDocumentRoot directive means the “the first subdomain part” – i.e. if you went to <code>http://super.virtualbox.me/index.php</code>, this would load the file <code>/var/www/super/public/index.php</code>.</p>
+        <p>Now disable the default site, enable the module and enable the new “virtualbox” site:</p>
+        <pre class="brush: bash; title: ; notranslate" title="">user@guest $ sudo a2dissite default
+user@guest $ sudo a2enmod vhost_alias
+user@guest $ sudo a2ensite virtualbox
+user@guest $ sudo service apache2 restart
+</pre>
+        <h2>Step 6: Try it out (with a surprise DNS bonus)</h2>
+        <p>Go for it. Assuming you’ve created <code>/Users/USERNAME/VirtualWWW/super/public/index.php</code> go ahead and visit
+          <a href="http://super.virtualbox.me/index.php">http://super.virtualbox.me/index.php</a> .</p>
+        <p>If that worked you might be wondering … “Hold on, what about DNS? How did the domain resolve to my local machine?” Well, there’s the surprise. I bought the “virtualbox.me” domain specifically for this purpose: it and all subdomains will resolve
+          to <code>192.168.201.101</code>. This is a neat trick I picked up from the BBC’s Forge platform, where developers are required to setup a virtual machine with a specific IP address and the domain sandbox.dev.bbc.co.uk always resolves to it.
+          I’ve expanded on that a bit, so that I can map subdomains to project folders without any further work.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1716/scan-google-chrome-cache-string-using-nodejs/index.html">Scan the Google Chrome Cache for a string using NodeJS</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1651/digital-ocean-should-fix-their-api-heres-how/index.html">Digital Ocean should fix their API - here's how</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,75 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fix The “For Attribute Resets Focus on Select Tag” Bug In Internet Explorer using Prototype | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Fix The “For Attribute Resets Focus on Select Tag” Bug In Internet Explorer using Prototype</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 17/02/2009. By Pete Otaqui.
+        </p>
+        <p>Browser sniffing is <em>bad</em>, or so the logic goes.</p>
+        <p>There are occasions though where it makes perfect sense – for example where you are fixing a known bug in a specific version of a browser. A good example is the bug in IE 6 that resets the selected index of a Select tag that has a label and the
+          for attribute. This bug doesn’t affect IE 7 or 8, or any other browser, but does make for a bad user experience if you are doing the right thing and including labels for your select tags.</p>
+        <p>Microsoft has
+          <a href="http://support.microsoft.com/kb/314279">published some javascript to fix this</a>  and I adapted their code to work with with the
+          <a href="http://prototypejs.org">Prototype Javascript Library</a> .</p>
+        <p>This fix will look for all select tags on the page (you could adapt it to only look for those with the “for” attribute but I have a sneaking suspicion that if anything that would in fact be a bit slower) and observe the onfocusin and onfocus events
+          as suggested in the knowledge base article.</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">// Select with 'for' attribute fix for IE
+Event.observe(window,'load',function() {
+	if ( !Prototype.Browser.IE || !(parseInt(navigator.userAgent.substring(navigator.userAgent.indexOf("MSIE")+5))==6) ) return;
+	$$('select').each(function(eSelect) {
+		eSelect.observe('focusin',function(e) {
+			try {
+				var eSrc = window.event.srcElement;
+				if ( eSrc ) eSrc.tmpIndex = eSrc.selectedIndex;
+			} catch(e) {}
+		});
+		eSelect.observe('focus',function(e) {
+			try {
+				var eSrc = window.event.srcElement;
+				if ( eSrc ) eSrc.selectedIndex = eSrc.tmpIndex;
+			} catch(e) {}
+		})
+	});
+});
+</pre>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../437/david-allens-getting-things-done-on-the-iphone-synced-with-ical/index.html">David Allen's Getting Things Done on the iPhone, synced with iCal</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../442/review-of-the-wordpress-blogging-clientfor-the-iphone/index.html">Review of the Wordpress blogging client for the iPhone</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

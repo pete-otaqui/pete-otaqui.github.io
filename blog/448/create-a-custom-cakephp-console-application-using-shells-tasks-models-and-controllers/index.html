@@ -1,0 +1,85 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create A Custom CakePHP Console Application Using Shells, Tasks, Models and Controllers | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Create A Custom CakePHP Console Application Using Shells, Tasks, Models and Controllers</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 10/02/2010. By Pete Otaqui.
+        </p>
+        <p>CakePHP doesn’t just come with its own console applications for baking code, managing ACL, inspecting classes, manipulating the schema, internationalisation and running the testsuite (whew!) it also lets you write your own console applications.</p>
+        <p><em>[NB: I always have an external cake core directory, for easy swapping.  The code examples all assume you have done this, or at least created an alias in your terminal to point to the core cake directory with something like: alias cake=’../cake/console/cake’</em> </p>
+        <p>First off, to find out about the current console applications you are running jump into a terminal and cd to your app directory, then simple run the “cake” command to see what you have available:</p>
+        <pre class="brush: bash; title: ; notranslate" title="">app_dir $ cake
+</pre>
+        <p>This will output a list of available shells in the core cake library and the two “vendors” directories.</p>
+        <p>So how do you go about creating your own? The
+          <a href="http://book.cakephp.org/view/110/Creating-Shells-Tasks">CakePHP documentation on creating Shells &amp; Tasks</a>  is a good place to start.</p>
+        <p>An application I’ve needed to automate with a cron-job, and also have available as an in-app, on-demand function is the sending of emails. I’m not talking about writing a mass mailer here, but rather just sending out course information to users
+          who are booked to attend – and doing so both automatically and on-demand when an administrator decides it is necessary. This is an obvious instance where you don’t want to duplicate the code in the controller and the shell.</p>
+        <p>In my case, I have several kinds of email I want to send, so I set up a generalised Task, used by several different Shells. The advantage of doing things this way around is that any other Shells can also make use of the emailer Task in the fututre.</p>
+        <p>Here’s some simplified code from one of the Shells, a “booking reminder” for delegates:</p>
+        <pre class="brush: php; title: ; notranslate" title="">// file app/vendors/shells/booking_reminder.php
+&lt;?php
+class BookingReminderShell extends Shell {
+  var $uses = array("Booking","User","Course");
+  var $tasks = array("Emailer");
+  public function main() {
+    // use $this-&gt;Booking etc as if we were in a controller
+    // use $this-&gt;Emailer for the task
+  }
+}
+</pre>
+        <p>And then we have the Task:</p>
+        <pre class="brush: php; title: ; notranslate" title="">// file app/vendors/shells/tasks/emailer.php
+&lt;?php
+class Emailer extends Shell {
+  public function execute() {
+    // this method is called when the task is instantiated,
+    // gives you a chance to setup
+  }
+  public function send($to,$from,$subject,$message,$attachments=null) {
+    // called from shell with: $this-&gt;Emailer-&gt;send();
+  }
+}
+</pre>
+        <p>Note how both Shells and tasks extend from the base “Shell” class. Also note how Shells use a method called “main()” when they are run, whereas Tasks use “execute()” when they are created.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../526/bbc-standards-ruby-gem/index.html">BBC Standards Ruby Gem</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../460/comment-and-uncomment-all-lines-in-a-linux-file-with-sed/index.html">Comment And Uncomment All Lines in a Linux File with Sed</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

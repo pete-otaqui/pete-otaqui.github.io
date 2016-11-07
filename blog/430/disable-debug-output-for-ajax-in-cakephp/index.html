@@ -1,0 +1,65 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Disable Debug Output for Ajax in CakePHP | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Disable Debug Output for Ajax in CakePHP</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 15/02/2009. By Pete Otaqui.
+        </p>
+        <p>If you are developing a
+          <a href="http://cakephp.org">CakePHP</a>  application and you have the debug value set to anything greater than 0 in your config/core.php file, you will find that Ajax requests will also get the extra information appended to the output.</p>
+        <p>In order to circumvent this add this to your “app_controller.php” file (which sits directly inside the “app/” dir, rather than in “app/controllers”):</p>
+        <pre class="brush: php; title: ; notranslate" title="">&lt;?php
+class AppController extends Controller {
+  var $components = array('RequestHandler');
+  var $helpers = array('Html','Form','Ajax');
+  function beforeFilter() {
+    if ( $this-&gt;RequestHandler-&gt;isAjax() ) {
+      Configure::write('debug',0);
+    }
+  }
+}
+?&gt;
+</pre>
+        <p>Note that while this will disable the debugging output, it will also have other affects too (for the life of the Ajax Request) like extending the length of time that the “schema” is cached. This should make little or no difference, but is worth
+          remembering.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../442/review-of-the-wordpress-blogging-clientfor-the-iphone/index.html">Review of the Wordpress blogging client for the iPhone</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../428/mozilla-fennec-alpha-2-release/index.html">Mozilla Fennec Alpha 2 Release</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

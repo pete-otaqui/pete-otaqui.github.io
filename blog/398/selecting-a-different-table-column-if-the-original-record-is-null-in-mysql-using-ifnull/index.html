@@ -1,0 +1,66 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Selecting a Different Table Column if the Original Record is NULL in MYSQL Using IFNULL | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Selecting a Different Table Column if the Original Record is NULL in MYSQL Using IFNULL</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 05/02/2009. By Pete Otaqui.
+        </p>
+        <p>MySQL’s documentation is OK, but it’s examples are sometimes quite poor.</p>
+        <p>I have a particular setup where values across two tables – a course table and a schedule table which relates to it – can be effectively “overridden”. The idea is that for any given course, one can set “default” values, and then these can be overridden
+          every time a course is actually scheduled to happen.</p>
+        <p>The courses table looks something like this:</p>
+        <p>COURSES
+          <br> id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY
+          <br> title VARCHAR(255) NOT NULL
+          <br> subtitle VARCHAR(255) NOT NULL
+          <br> description TEXT NOT NULL</p>
+        <p>SCHEDULES
+          <br> id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY
+          <br> course_id INT(11) NOT NULL
+          <br> subtitle VARCHAR(255) NULL
+          <br> description TEXT NULL</p>
+        <p>Hopefully you can see what I would want during a SELECT – to get the values from the schedules table if they aren’t null, or otherwise get the value from the courses table if they are.</p>
+        <p>This is achieved with the IFNULL built in function in MySQL. IFNULL takes two arguments, and returns the first argument if it (the first argument that is) is not null, or the second argument if it is. The actual SQL for my example looks like this:</p>
+        <p>SELECT courses.title, IFNULL(schedules.subtitle,courses.subtitle) AS subtitle, IFNULL(schedules.description,courses.description) AS description FROM schedules LEFT JOIN courses ON schedule.course_id=course.id;</p>
+        <p>This will give you the “subtitle” and “description” values from the linked table (schedules) if they exist, or the default values from the original table (courses) if they don’t.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../402/custom-model-and-field-result-set-in-cakephp/index.html">Custom Model and Field Result Set in CakePHP</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../396/performing-operations-on-mysql-data-while-copying-between-tables/index.html">Performing Operations on MySQL Data While Copying between Tables</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

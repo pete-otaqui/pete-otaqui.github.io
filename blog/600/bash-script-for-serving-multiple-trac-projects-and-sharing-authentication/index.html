@@ -1,0 +1,77 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bash Script for Serving Multiple Trac Projects and Sharing Authentication | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Bash Script for Serving Multiple Trac Projects and Sharing Authentication</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 30/03/2010. By Pete Otaqui.
+        </p>
+        <p>I use Trac for personal projects, and I share some of these out with people as required. I use tracd (TracStandalone) for this, rather than a full-blown apache setup, since it serves my needs quite nicely and is a lot easier to turn on and off
+          as required without tweaking apache config and rebooting the whole webserver.</p>
+        <p>All my projects live under a single parent directory, and I prefer to share a single users digest file between them all – so ideally I wanted to share a single tracd to run all my projects. This is fairly straightforward on the command line:</p>
+        <pre class="brush: bash; title: ; notranslate" title="">tracd --hostname=webhost.com -p 9876 \
+--auth="*,/path/projects/people.htdigest,Realm" \
+/path/projects/p1 \
+/path/projects/p2
+</pre>
+        <p>That is ….
+          <br> Line 1 – start tracd for a given hostname and port,
+          <br> Line 2 – specify auth for all projects (*), the auth file and the “Realm” you specified when creating the file with apache’s htdigest command
+          <br> Lines 3+ – specify as many projects as you want to run</p>
+        <p>This is ok with a couple of projects, but gets unwieldy quite quickly. What I needed was a little shell script to open up all projects under a given directory quickly. Here’s what I came up with:</p>
+        <pre class="brush: bash; title: ; notranslate" title="">#!/bin/bash
+# make / truncate a temp file to store names:
+temp=/tmp/tracdpaths
+&gt; $temp
+# specify base directory:
+base=/path/projects/
+# output all subdirectories to temp file:
+find $base -maxdepth 1 -mindepth 1 -type d \
+-exec echo -n "{} " &gt; $temp \;
+# now start tracd
+tracd --hostname=webhost.com -p 9876 \
+--auth="*,/path/projects/people.htdigest,Realm" \
+`cat $temp`
+</pre>
+        <p>Essentially this script uses ‘find’ to get all of the directories exactly 1 level down from your projects directory, and will echo their paths to a temp file (suppressing the newlines). It will then run run tracd, appending the contents of this
+          file to the end of the call.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../609/things-a-family-can-do-with-a-new-dslr/index.html">Things a family can do with a new DSLR</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../585/salmon-stew-with-honey-mustard-and-thyme/index.html">Salmon stew with honey, mustard and thyme</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

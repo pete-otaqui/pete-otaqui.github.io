@@ -1,0 +1,316 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Event Emitter, Pub Sub or Deferred Promises … which should you choose? | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Event Emitter, Pub Sub or Deferred Promises … which should you choose?</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <div class="post-image">
+          <img src="../../wp-content/uploads/observer_patterns.png" alt="Event Emitter, Pub Sub or Deferred Promises … which should you choose?">
+        </div>
+        <p class="post-info">
+          Posted on 02/10/2012. By Pete Otaqui.
+        </p>
+        <p>The obvious answer to the question “should you choose an Event Emitter, Pub Sub or Deferred / Promises” is that it depends on what you are doing.</p>
+        <p>In this post I will explore a little about how each pattern works with (<em>very</em> ) basic implementations, and then I’ll look at the reasons why you might choose one over another.</p>
+        <p><span id="more-1374"></span> </p>
+        <h2>Event Emitter</h2>
+        <p>What I’ve termed “Event Emitter”, a phrase borrowed from
+          <a href="http://nodejs.org">node</a>, is probably the most well known of the three observer patterns I’m covering here in the web development world, since it’s the same pattern that DOM Events follow: you have an instance of a thing, and you bind event listener functions
+          to it. When that event is triggered, your functions are called with some arguments.</p>
+        <p>jQuery makes this trivial:</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">
+$('.some-class').click(function(ev) {
+  console.log('you clicked!');
+});
+</pre>
+        <p>To implement this yourself on your own objects is also fairly easy if you only want something simplistic. I’m going to supply a simple way to do something “on()” and event, and also to “trigger()” events. Note that I haven’t written anything here
+          to allow for “unsubscribing”, “cancellation”, “bubbling”, or provided any other utility methods like “once()”.</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">
+function EventEmitter() {
+  var events = {};
+  this.on = function(name, fn) {
+    events[name] = events[name] || [];
+    events[name].push(fn);
+  }
+  this.trigger = function(name, args) {
+    events[name] = events[name] || [];
+    args = args || [];
+    events[name].forEach(function(fn) {
+      fn.apply(this, args);
+    }
+  }
+}
+var my_event_emitter = new EventEmitter();
+my_event_emitter.on('curtain_dropped', function(encore) {
+  console.log('applause');
+  if ( encore ) console.log('encore! encore!');
+});
+my_event_emitter.trigger('curtain_dropped', [true]);
+</pre>
+        <h2>Pub Sub</h2>
+        <p>Pub Sub is in some ways quite similar to Event Emitter. The key difference is that you do everything in something of a “void”. You never know anything about what published a “topic” or wether anything is “subscribed” – the pieces are much more
+          loosely joined.</p>
+        <p>Here’s a very basic implementation of the pattern:</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">
+// since we're creating global functions on window, let's wrap
+// everything in a closure so that we get a private scope
+(function(global) {
+  var topics = {};
+  global.subscribe = function(name, fn) {
+    topics[name] = topics[name] || [];
+    topics[name].push(fn);
+  }
+  global.publish = function(name, args) {
+    topics[name] = topics[name] || [];
+    topics[name].forEach(function(fn) {
+      fn.apply(this, args);
+    });
+  }
+})(window);
+subscribe('download_started', function(total_kb) {
+  console.log('will download an extra', total_kb);
+});
+publish('download_started', [1024]);
+</pre>
+        <h2>Deferred Promises</h2>
+        <p>The mighty
+          <a href="https://github.com/kriszyp">Kris Zyp</a>  authored the
+          <a href="http://wiki.commonjs.org/wiki/Promises/A">CommonJS Promises/A proposal</a> . To describe why promises are useful, you can consider a function which takes a “callback” as an argument, such as an HTTP request. If you really only want to do one thing in your callback, that’s fine, but as
+          code and requirements get more complicated, your callback can become very messy and full of branching code.</p>
+        <p>By using the promise pattern, you don’t provide a callback to the function. Instead, the object you get back from the function allows you add callbacks to itself – this is called the “promise” object. Let’s look at how you might code it, bearing
+          in mind that there’s a lot here I haven’t done (such as a when() function, the ability to add done() and fail() callbacks after resolution, chaining, etc, etc).</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">function Deferred() {
+  var resolved_callbacks = [],
+      rejected_callbacks = [];
+  this.resolve = function(args) {
+    resolved_callbacks.forEach(function(fn) {
+      fn.apply(this, args);
+    });
+  };
+  this.reject = function(args) {
+    rejected_callbacks.forEach(function(fn) {
+      fn.apply(this, args);
+    });
+  };
+  this.promise = {
+    done : function(fn) {
+      resolved_callbacks.push(fn);
+    }
+    fail : function(fn) {
+      rejected_callbacks.push(fn);
+    }
+  }
+}
+// In order to use this, some async function of
+// yours will create a deferred, resolve or reject
+// it later, and return its promise.
+function make_ajax_request(url) {
+  var deferred = new Deferred();
+  $.get(url, {
+    success: function(data) {
+      deferred.resolve(data);
+    },
+    error: function(xhr, error) {
+      deferred.reject(error);
+    }
+  });
+  return deferred.promise;
+}
+// now you get to the real client part,
+// where we are calling the async function,
+// and attaching various callbacks willy nilly.
+var promise = make_ajax_request('foo.json');
+promise.done(function() {
+  console.log('it succeeded!');
+}
+promise.fail(function() {
+  console.log('it failed');
+}
+if ( /\bMSIE 6/.test(navigator.userAgent) ) {
+  promise.done(function() {
+    console.log('Amazing that anything works really');
+  }
+  promise.fail(function() {
+    console.log('Well, what did you expect!');
+  }
+}
+</pre>
+        <p>[NB – the example implementation above is even more stupid than it might first appear because jQuery returns “promises” from all ajax functions!]</p>
+        <h2>Discussion Part 1: EE vs PS</h2>
+        <p>The two of these three patterns that are most straightforward to compare are the Event Emitter and Pub Sub. Here’s a quick breakdown:</p>
+        <style>
+          #breakdown {
+            text-align: left;
+            margin: 1em auto;
+          }
+          
+          #breakdown td,
+          #breakdown th {
+            text-align: left;
+            padding: 1em;
+          }
+        </style>
+        <table border="1" id="breakdown">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Event Emitter</th>
+              <th>Pub Sub</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Coupling</th>
+              <td>Tight</td>
+              <td>Loose</td>
+            </tr>
+            <tr>
+              <th>Control</th>
+              <td>Fine</td>
+              <td>Coarse</td>
+            </tr>
+            <tr>
+              <th>Example</th>
+              <td>Parents reacting to child events</td>
+              <td>Global interactions across UI</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>As you can see, Event Emitter requires that you have a reference to the “thing” that you are listening to an event on. Pub Sub does not have that requirement, and all topics are published in a single “global” scope.</p>
+        <p>Pub Sub is more simple to manage in many ways – something publishes, something subscribes, and that’s all there is to it. However, it breaks the idea of encapsulation really thoroughly. Event Emitter on the other hand has a higher barrier to entry
+          – you have to “know” about the thing you want to listen to events on, but it does keep things much more contained with known boundaries.</p>
+        <p>The question then is, what are you building? If you’re sticking very strictly to something like Nikolas Zakas’ sandboxed model (which seems to be a very nice fit for the Yahoo homepage, but not every kind of web page) then you can stick to Event
+          Emitter and you don’t need to worry about much else. If you’re building a complex, rich, interconnected UI you’re almost certainly going to get some benefit from using Pub Sub.</p>
+        <p>I would also suggest that a lot of things that happen “globally” could be done very nicely with Pub Sub. Take logging for example – whether you’re using console.log or other global logging method, it might make much more sense to publish on a
+          logging topic – and allow anything that wants to subscribe to it, whether that’s a user notification system, or for debugging, or whatever. Another example might be network activity – by publishing individual network events globally, it becomes
+          much easier to manage user notification (for example with a single compound spinner / loading bar).</p>
+        <h2>Discussion Part 2: Deferred Promises</h2>
+        <p>Using deferred and promises was a bit more of a mental leap for me to start with. In fact, it wasn’t until I messed about with trying to implement the Promises/A specification myself that I really started to get the idea and grok how to use it.</p>
+        <p>Unless you’re writing some kind of framework, you’re fairly unlikely to be creating a deferred object and returning a promise. It’s more likely that you’ll be using a promise given back to you by something else, for example jQuery’s AJAX functions.
+          Promises are really just a more powerful way of doing “callbacks”, so definitely have their uses. We can look at some jQuery code here:</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">
+// STAGE 1 - SIMPLE
+// callbacks
+$.get('foo.json', {
+  success: function(data) {
+    updateDom(data);
+  },
+  error: function() {
+    alert('there was a problem');
+  }
+);
+// same thing, using the promise:
+$.get('foo')
+  .done(function(data) {
+    updateDom(data);
+  })
+  .fail(function() {
+    alert('there was a problem');
+  });
+// STAGE 2
+// now lets do something else on success AND failure
+// callbacks
+$.get('foo.json', {
+  success: function(data) {
+    removeLoadingIndicator();
+    updateDom(data);
+  },
+  error: function() {
+    removeLoadingIndicator();
+    alert('there was a problem');
+  }
+);
+//promise
+$.get('foo')
+  .done(function(data) {
+    updateDom(data);
+  })
+  .fail(function() {
+    alert('there was a problem');
+  });
+  .always(function() {
+    removeLoadingIndicator();
+  });
+// STAGE 3
+// let's branch depending on some states
+// callbacks
+$.get('foo.json', {
+  success: function(data) {
+    updateDom(data);
+    if ( !waitingForMore() ) {
+      removeLoadingIndicator();
+    } else {
+      updateLoadingIndicator();
+    }
+  },
+  error: function() {
+    alert('there was a problem');
+    if ( !waitingForMore() ) {
+      removeLoadingIndicator();
+    } else {
+      updateLoadingIndicator();
+    }
+  }
+);
+// and promises
+//promise
+$.get('foo')
+  .done(function(data) {
+    updateDom(data);
+  })
+  .fail(function() {
+    alert('there was a problem');
+  });
+  .always(function() {
+    if ( !waitingForMore() ) {
+      removeLoadingIndicator();
+    } else {
+      updateLoadingIndicator();
+    }
+  });
+</pre>
+        <p>As you can see, the more complex the things you want to do with your callbacks, the nicer promises seem. You normally get a fairly nice API with Deffered / Promises implementations, which will let you add “callbacks” even after the async operation
+          has completed – and they will just be executed immediately. If you find CommonJS a bit hard to plough through, you could take a look at the
+          <a href="http://api.jquery.com/category/deferred-object/">jQuery Deferred Object</a> .</p>
+        <h2>Summary</h2>
+        <p>So we looked at three variations of the basic “Observer” pattern, how they might be implemented and what they might be useful for: Event Emitter is a real classic, and allows for good practices and control over things that happen; Pub Sub is more
+          flexible for cross-component events; Deferred and Promises give a powerful way to handle callbacks. </p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1333/why-facebook-is-doomed-and-google-will-win-or-maybe-not/index.html">Why Facebook is Doomed and Google+ Will Win (Or Maybe Not)</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1367/being-and-hiring-a-freelancer-in-the-middle-east/index.html">Being and Hiring a Freelancer in the Middle East</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

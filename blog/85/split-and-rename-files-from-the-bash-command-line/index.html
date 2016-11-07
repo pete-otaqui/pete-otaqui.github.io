@@ -1,0 +1,60 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Split and Rename text files from the Bash command line | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Split and Rename text files from the Bash command line</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 26/02/2008. By Pete Otaqui.
+        </p>
+        <p>I occasionally read text files (usually downloaded from
+          <a href="http://www.gutenberg.org/wiki/Main_Page">the Gutenberg Project</a> ) on my mobile phone. This is not the best user experience, but bearable and very useful at times.</p>
+        <p>The most annoying issue is the incredibly slow management of very large text files (sometimes greater than 1Mb) that my phone displays – so i decided to rename them.</p>
+        <p>Using my mac, I came up with this couple of commands to do the work for me, between them they will split all text files into 1000 line chunks, and assuming an original filename of “somefile.txt” also rename them to “somefile_XX.txt” where XX is
+          actually two letters denoting the part, starting at aa, ab, ac, etc.</p>
+        <p>The first command is dead easy and splits the files:</p>
+        <p><code> for file in *.txt ; do split $file $file ; done</code></p>
+        <p>This will split the files and turn “somefile.txt” into “somefile.txtaa”, “somefile.txtab”, “somefile.txtac” etc. which is obviously not great – so we need the next step:</p>
+        <p><code>for file in * ; do mv $file `echo $file |<br>
+sed 's/(.*).txt([a-z]{2})/1_2.txt/'` ; done</code></p>
+        <p>Now you should have all the files nicely named “somefile_aa.txt”, “somefile_ab.txt”, “somefile_ac.txt” etc.</p>
+        <p>You might prefer numbers rather than letters, in which case just check out the man page for the ‘split’ command.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../86/is-link-journalism-any-different-to-the-majority-of-reporting/index.html">Is Link Journalism any different to the majority of reporting?</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../84/am-i-a-twit/index.html">Am I a Twit</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

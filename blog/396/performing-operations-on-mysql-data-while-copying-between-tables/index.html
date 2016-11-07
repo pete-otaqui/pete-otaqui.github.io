@@ -1,0 +1,68 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Performing Operations on MySQL Data While Copying between Tables | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Performing Operations on MySQL Data While Copying between Tables</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 02/02/2009. By Pete Otaqui.
+        </p>
+        <p>I had the need to copy a load of data from one table to another while incrementing (or just adding an arbitrary number to) some numeric indices.</p>
+        <p>Before I lept to a programming language like PHP to do a load of selects, manipulate the data and then run inserts I thought I’d try and do it in pure SQL. It turns out this is fairly straightforward.</p>
+        <p>Let’s assume we have two databases, db_source and db_target and that we want to copy stuff from the former into the latter. Both of these have identical tables called ‘users’ and ‘posts’ like so:</p>
+        <p>USERS
+          <br> id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+          <br> name VARCHAR(255) NOT NULL</p>
+        <p>POSTS
+          <br> id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+          <br> user_id INT(11) NOT NULL,
+          <br> title VARCHAR(255),
+          <br> post TEXT</p>
+        <p>Now, let’s assume that in db_target we *already* have some posts and some users, and what we really want to do is merge the records from db_source with the ones that already in db_target, obviously maintaining all the related keys.</p>
+        <p>In this example we will say that we have 5 current users in db_target, and 100 posts; and also that the auto_increment values are 1 to 1 in both tables (that is the next auto_increment value will be 6 and 101 for users and posts respectively in
+          db_target).</p>
+        <p>With these two commands, which will run SO much faster than some kind of programmatic loop, we can copy all the users and posts at a stroke without losing any associations:</p>
+        <p># copy the users, adding 5 to the user id while we’re at it:
+          <br> INSERT INTO db_target.users ( id, name ) SELECT (id+5) AS id, name FROM db_source.users;</p>
+        <p># copy the posts, adding 5 to the user_id and 100 to the post id:
+          <br> INSERT INTO db_target.posts ( id, user_id, title, post ) SELECT (id+100) AS id, (user_id+5) AS user_id, title, post FROM db_source.posts;</p>
+        <p>Note that I have selected “as” where I have been using the addition operator. Given that we are also specifying which columns we are updating I’m not 100% sure that it’s necessary, but I find it helpful anyway.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../398/selecting-a-different-table-column-if-the-original-record-is-null-in-mysql-using-ifnull/index.html">Selecting a Different Table Column if the Original Record is NULL in MYSQL Using IFNULL</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../382/enable-google-gears-and-offline-gmail-for-mozilla-prism/index.html">Enable Google Gears and Offline Gmail for Mozilla Prism</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

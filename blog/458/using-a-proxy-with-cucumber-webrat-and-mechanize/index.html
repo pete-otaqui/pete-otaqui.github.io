@@ -1,0 +1,59 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Using a Proxy with Cucumber, Webrat and Mechanize | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Using a Proxy with Cucumber, Webrat and Mechanize</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 17/12/2009. By Pete Otaqui.
+        </p>
+        <p>If you’re writing Cucumber tests using Webrat and Mechanize to test a site, and you are behind a proxy server, you can do something like this to tell mechanize about it in your webrat_steps.rb file:</p>
+        <p><code><br>
+When /^I am on (.+)$/ do |page_name|<br>
+    webrat.adapter.mechanize.set_proxy('proxy.host.com',8080)<br>
+    visit path_to(page_name)<br>
+end<br>
+</code></p>
+        <p>I’m sure there’s a tidier way to do this, but it’s quick and it works with the following gem versions:</p>
+        <p>Cucumber 0.3.11
+          <br> Webrat 0.5.3
+          <br> Mechanize 0.9.3</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../460/comment-and-uncomment-all-lines-in-a-linux-file-with-sed/index.html">Comment And Uncomment All Lines in a Linux File with Sed</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../449/cucumber-with-webrat-and-mechanize-on-centos-5/index.html">Cucumber with Webrat and Mechanize on CentOS 5</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

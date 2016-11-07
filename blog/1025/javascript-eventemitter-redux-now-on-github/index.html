@@ -1,0 +1,69 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Javascript EventEmitter Redux, now on github | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Javascript EventEmitter Redux, now on github</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 11/01/2011. By Pete Otaqui.
+        </p>
+        <p>I’ve added some more features to the EventEmitter mixin (like actually working listener removal) and posted it to github:</p>
+        <p>
+          <a href="https://github.com/pete-otaqui/EventEmitter">EventEmitter on github</a> 
+        </p>
+        <p>It’s fairly simple to use … something like this:</p>
+        <pre class="brush: jscript; title: ; notranslate" title="">var MyKlass = function() {};
+EventEmitter.augment(MyKlass.prototype);
+/**
+ * Show me
+ *
+ * @fires shown
+ */
+MyKlass.prototype.showMe = function() {
+  this.trigger('shown', {'visible':true});
+}
+var myInstance = new MyKlass();
+myInstance.on('shown', function(e) {
+  console.log(e.visible);
+}
+myInstance.showMe();
+</pre>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1028/rtl-input-text-with-large-text-indent-value-magically-scrolls-in-opera/index.html">RTL Input text with large text-indent value "magically scrolls" in Opera</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1011/adding-vertical-split-support-to-gnu-screen-in-mac-os-x-snow-leopard/index.html">Adding Vertical Split support to GNU Screen in Mac OS X Snow Leopard</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

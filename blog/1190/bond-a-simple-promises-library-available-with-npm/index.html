@@ -1,0 +1,67 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bond – a simple Promises library, available with npm | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Bond – a simple Promises library, available with npm</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <p class="post-info">
+          Posted on 24/03/2012. By Pete Otaqui.
+        </p>
+        <p>I’ve released
+          <a href="https://github.com/pete-otaqui/bond">bond</a>  – a simple Promises/A implementation. The only reasons to use this library rather than something like node-promise are that it can be used in a browser as well as nodejs, it supports multiple arguments for promise callbacks&nbsp;(this
+          is actually why I wrote it) and it has a cool name.</p>
+        <p><span id="more-1190"></span> </p>
+        <p>Bond installation is extremely easy with
+          <a href="http://npmjs.org">npm</a>  by adding it to your package.json file and executing “npm install”.</p>
+        <p>It provides two equivalent options for usage “new bond.Deferred()” or “bond.defer()”. This returns a deferred object with the usual methods:</p>
+        <ul>
+          <li>my_deferred.resolve(arg1, …, argN)</li>
+          <li>my_deferred.reject(arg1, …, argN)</li>
+          <li>my_deferred.notify(arg1, …, argN)</li>
+          <li>my_promise = my_deferred.promise() *</li>
+          <li>my_promise.then(successFn, failureFn, progressFn)</li>
+          <li>my_promise.done(successFn)</li>
+          <li>my_promise.fail(failureFn)</li>
+          <li>my_promise.progress(progressFn)</li>
+        </ul>
+        <p>* nb – providing “promise()” as a method rather than a property violates
+          <a href="http://wiki.commonjs.org/wiki/Promises/A">the CommonJS Promises/A spec</a>, but I’ve seen it elsewhere and prefer it.</p>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1217/sheaf-a-little-library-for-serial-promise-management/index.html">Sheaf - a little library for serial Promise management</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1188/use-tmux-for-code-reviews/index.html">Use tmux for code reviews</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,67 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Using the contents of a file as a variable in a Makefile | Otaqui.com</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>
+          <a href="../../">Otaqui.com Blog</a> 
+        </h1>
+      </div>
+    </header>
+    <header>
+      <div class="container">
+        <h2>Using the contents of a file as a variable in a Makefile</h2>
+      </div>
+    </header>
+    <article>
+      <div class="container">
+        <div class="post-image">
+          <img src="../../wp-content/uploads/makefile_file_contents_variable.png" alt="Using the contents of a file as a variable in a Makefile">
+        </div>
+        <p class="post-info">
+          Posted on 11/10/2012. By Pete Otaqui.
+        </p>
+        <p>I recently wanted to get the contents of a VERSION file to use in a Makefile make target.</p>
+        <p>It so happens that I only care about running this on operating systems which have sh / bash, so it’s fairly straightforward with some command line magic, combined with the right Makefile syntax.</p>
+        <p><span id="more-1421"></span> </p>
+        <p>You can set variables in gnu make outside of make targets, which makes them easy to share around. Here’s a simplification of “release” target. You can see that I’m creating a release message, which I output to a temporary file, then opening it
+          in Sublime Text.</p>
+        <pre class="brush: bash; title: ; notranslate" title=""># this is where we create the variable - this obviously requires `cat`
+version := $(shell cat VERSION)
+# here is the actual target
+release:
+  # use the variable at the top of the message file
+  echo "Product Version $(version)" &gt; /tmp/release-message
+  echo "" &gt;&gt; /tmp/release-message
+  echo "" &gt;&gt; /tmp/release-message
+  cat CHANGES &gt;&gt; /tmp/release-message
+  subl /tmp/release-message
+</pre>
+      </div>
+    </article>
+    <nav>
+      <div class="hr next-previous">
+        <div class="container">
+          <p>
+            Next:
+            <a href="../../1439/creating-irregular-non-rectangular-buttons-with-backbone-and-marionette/index.html">Creating irregular, non-rectangular buttons with Backbone and Marionette</a> 
+          </p>
+          <p>
+            Previous:
+            <a href="../../1399/how-to-remote-debug-safari-on-the-ios6-ipad-simulator/index.html">How to setup and use remote debugging with Safari on the iOS6 iPad Simulator</a> 
+          </p>
+        </div>
+      </div>
+    </nav>
+    <footer>
+      <div class="container">
+        Built by Pete Otaqui
+      </div>
+    </footer>
+  </body>
+</html>
