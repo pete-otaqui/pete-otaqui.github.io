@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>Load CSS With Javascript</title>
+</head>
+<body>
+    <h1>Load CSS With Javascript</h1>
+    <button>Load the CSS</button>
+    <script type="text/javascript" src="loadcss.js"></script>
+    <script type="text/javascript">
+        /**
+         * Loads a CSS file from the supplied URL
+         * @param  {String} url     The URL of the CSS file, if its relative it will be to the current page's url
+         * @return {HTMLElement}    The <link> which was appended to the <head>
+         */
+        function loadcss(url) {
+            var head = document.getElementsByTagName('head')[0],
+                link = document.createElement('link');
+            link.type = 'text/css';
+            link.rel = 'stylesheet';
+            link.href = url;
+            head.appendChild(link);
+            return link;
+        }
+
+
+        // I've used raw DOM API here, but it would be even simpler with something like jQuery
+        var button = document.getElementsByTagName('button')[0];
+        button.addEventListener('click', function(ev) {
+            loadcss('my_css_file.css');
+        }, false);
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,1531 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>Context vs Find</title>
+    <script src="http://images.mangahigh.com/javascript/jquery-1.5.1.min.js"></script>
+    <style>
+        body {
+            margin:10px 420px 10px 10px;
+        }
+        #dom-container {
+            position: absolute;
+            width: 400px;
+            right: 10px;
+            top: 10px;
+            bottom: 10px;
+            overflow: auto;
+            background-color: black;
+            color: white;
+        }
+        #dom-container a {
+            color: #36f;
+        }
+        #dom-container a:visited {
+            color: #96f;
+        }
+        .jquery-version {
+            font-style: italic;
+        }
+        #results td {
+            font-family: "Courier New";
+        }
+    </style>
+    <script>
+        $(function() {
+            var tests, results, result, table = $('#results tbody');
+            $('.jquery-version').html('jquery ' + $().jquery);
+
+            tests = {
+                '$(".dsq-comment-body-10148")': function() {
+                    $(".dsq-comment-body-10148");
+                },
+                
+                '$(".disqus_thread .dsq-comment-body-10148")': function() {
+                    $(".disqus_thread .dsq-comment-body-10148");
+                },
+                
+                '$(".dsq-comment-body-10148", $(".disqus_thread"))': function() {
+                    $(".dsq-comment-body-10148", $(".disqus_thread"));
+                },
+                
+                '$(".dsq-comment-body-10148", $(".disqus_thread")[0])': function() {
+                    $(".dsq-comment-body-10148", $(".disqus_thread")[0]);
+                },
+                
+                '$(".disqus_thread").find(".dsq-comment-body-10148")': function() {
+                    $(".disqus_thread").find(".dsq-comment-body-10148")
+                },
+
+            };
+            results = testSet(tests);
+
+            for ( key in results ) {
+                result = results[key];
+                html = '<tr><td>' + key + '</td><td>' + result + '</td></tr>';
+                table.append(html);
+            };
+        });
+
+        function testSet(set) {
+            var item, results = {};
+            for ( item in set ) {
+                results[item] = test(set[item]);
+            }
+            return results;
+        }
+
+        function test(fn) {
+            var i, max, start, end;
+            start = +new Date;
+            for ( i=0, max=10000; i<max; i++ ) {
+                fn();
+            }
+            end = +new Date;
+            return (end - start) / 100;
+        }
+    </script>
+</head>
+<body>
+    <h1>Context vs Find</h1>
+
+    <p>This page contains a fairly complex DOM, to use for testing.</p>
+
+    <p>We are using <span class="jquery-version">a version of jquery</span>.</p>
+
+    <h2>Results</h2>
+    <table id="results">
+        <thead>
+            <tr>
+                <th>Query</th>
+                <th>Time</th>
+            </tr>
+        <tbody>
+        </tbody>
+    </table>
+    
+<div id="dom-container">
+  <div id="jq-siteContain">
+      <div id="jq-header">
+        <a id="jq-siteLogo" href="http://jquery.com/" title="jQuery Home"><img src="http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif" width="215" height="53" alt="jQuery: Write Less, Do More." /></a>
+        <div id="jq-primaryNavigation">
+          <ul>
+<li class="jq-jquery jq-current"><a href="http://jquery.com/" title="jQuery Home">jQuery</a></li>
+<li class="jq-ui"><a href="http://jqueryui.com/" title="jQuery UI">UI</a></li>
+<li class="jq-mobile"><a href="http://jquerymobile.com/" title="jQuery Mobile">Mobile</a></li>
+<li class="jq-meetup"><a href="http://meetups.jquery.com/" title="jQuery Meetups">Meetups</a></li>
+<li class="jq-forum"><a href="http://forum.jquery.com/" title="jQuery Forum">Forum</a></li>
+<li class="jq-blog"><a href="http://blog.jquery.com/" title="jQuery Blog">Blog</a></li>
+<li class="jq-about"><a href="http://jquery.org/about" title="About jQuery">About</a></li>
+<li class="jq-donate"><a href="http://jquery.org/donate" title="Donate to jQuery">Donate</a></li>
+          </ul>
+        </div><!-- /#primaryNavigation -->
+
+        <div id="jq-secondaryNavigation">
+          <ul>
+            <li class="jq-download jq-first"><a href="http://docs.jquery.com/Downloading_jQuery">Download</a></li>
+            <li class="jq-documentation jq-current"><a href="http://docs.jquery.com/">Documentation</a></li>
+            <li class="jq-tutorials"><a href="http://docs.jquery.com/Tutorials">Tutorials</a></li>
+            <li class="jq-bugTracker"><a href="http://bugs.jquery.com/">Bug Tracker</a></li>
+            <li class="jq-discussion jq-last"><a href="http://docs.jquery.com/Discussion">Discussion</a></li>
+          </ul>
+        </div><!-- /#secondaryNavigation -->
+
+
+
+        <form id="jq-primarySearchForm" action="http://api.jquery.com" method="get" autocomplete="off">
+          <div>
+            <input type="hidden" value="1" name="ns0"/>
+            <label for="jq-primarySearch">Search <span class="jq-jquery">jQuery</span></label>
+            <input type="text" value="" accesskey="f" title="Search jQuery" name="s" id="jq-primarySearch" class=""/>
+            <button type="submit" name="go" id="jq-searchGoButton"><span>Go</span></button>
+          </div>
+        </form>
+
+<!--
+        <h1 id="blog-title"><span><a href="http://api.jquery.com/" title="jQuery API" rel="home">jQuery API</a></span></h1>
+        <div id="blog-description">jQuery API Reference</div>
+-->
+        <h1>jQuery API</h1>
+
+
+      </div><!-- /#header -->
+
+      <div id="jq-content" class="jq-clearfix">
+
+    <a href="//events.jquery.org"><img src="http://static.jquery.com/promotion/banners/sf-2012.png" /></a>
+
+  <div id="access">
+    <div class="skip-link"><a href="#content" title="Skip to content">Skip to content</a></div>
+    <div id="menu"><ul><li class="page_item page-item-1295"><a href="http://api.jquery.com/api/">api</a></li><li class="page_item page-item-1772"><a href="http://api.jquery.com/jsonp/">jsonp</a></li><li class="page_item page-item-3413"><a href="http://api.jquery.com/Types/">Types</a></li><li class="page_item page-item-3608"><a href="http://api.jquery.com/extending-ajax/">Extending Ajax: Prefilters, Converters, and Transports</a></li></ul></div>
+  </div>
+<!-- #access -->
+
+  <div id="jq-primaryContent">
+    <div id="content">
+
+      <div id="post-361" class="hentry p1 post publish category-core category-1.0 category-1.4 untagged y2009 m11 d14 h08">
+        <div class="entry-content">
+        <div class="entry-title roundTop">
+          
+          <h1 class="jq-clearfix">jQuery()</h1>
+          <div class="entry-meta jq-clearfix">
+                        Categories:
+            <span class="category"><a href="http://api.jquery.com/category/core/" title="View all posts in Core">Core</a></span>
+  
+
+          </div>
+
+</div>
+
+<div class="toc">
+<h4><span>Contents:</span></h4>
+<ul class="toc-list">
+<li>
+<a href="#jQuery1">jQuery( selector [ , context ]  ) </a><ul>
+<li>jQuery( selector [, context]  )
+              </li>
+<li>jQuery( element )
+              </li>
+<li>jQuery( object )
+              </li>
+<li>jQuery( elementArray )
+              </li>
+<li>jQuery( jQuery object )
+              </li>
+<li>jQuery()
+              </li>
+</ul>
+</li>
+<li>
+<a href="#jQuery2">jQuery( html [ , ownerDocument ]  ) </a><ul>
+<li>jQuery( html [, ownerDocument]  )
+              </li>
+<li>jQuery( html, props )
+              </li>
+</ul>
+</li>
+<li>
+<a href="#jQuery3">jQuery( callback  ) </a><ul><li>jQuery( callback )
+              </li></ul>
+</li>
+</ul>
+</div>
+<div id="jQuery1" class="entry method">
+<h2 class="jq-clearfix roundTop section-title">
+<span class="name">jQuery( selector [, context]  )</span> <span class="returns">Returns: <a class="return" href="http://api.jquery.com/Types/#jQuery">jQuery</a></span>
+</h2>
+<div class="jq-box roundBottom entry-details">
+<p class="desc"><strong>Description: </strong>Accepts a string containing a CSS selector which is then used to match a set of elements.</p>
+<ul class="signatures">
+<li class="signature" id="jQuery-selector-context">
+<h4 class="name">
+<span class="versionAdded">version added: <a href="/category/version/1.0/">1.0</a></span>jQuery( selector [, context] )</h4>
+<p class="arguement"><strong>selector</strong>A string containing a selector expression</p>
+<p class="arguement"><strong>context</strong>A DOM Element, Document, or jQuery to use as context</p>
+</li>
+<li class="signature" id="jQuery-element">
+<h4 class="name">
+<span class="versionAdded">version added: <a href="/category/version/1.0/">1.0</a></span>jQuery( element )</h4>
+<p class="arguement"><strong>element</strong>A DOM element to wrap in a jQuery object.</p>
+</li>
+<li class="signature" id="jQuery-object">
+<h4 class="name">
+<span class="versionAdded">version added: <a href="/category/version/1.0/">1.0</a></span>jQuery( object )</h4>
+<p class="arguement"><strong>object</strong>A plain object to wrap in a jQuery object.</p>
+</li>
+<li class="signature" id="jQuery-elementArray">
+<h4 class="name">
+<span class="versionAdded">version added: <a href="/category/version/1.0/">1.0</a></span>jQuery( elementArray )</h4>
+<p class="arguement"><strong>elementArray</strong>An array containing a set of DOM elements to wrap in a jQuery object.</p>
+</li>
+<li class="signature" id="jQuery-jQuery object">
+<h4 class="name">
+<span class="versionAdded">version added: <a href="/category/version/1.0/">1.0</a></span>jQuery( jQuery object )</h4>
+<p class="arguement"><strong>jQuery object</strong>An existing jQuery object to clone.</p>
+</li>
+<li class="signature" id="jQuery"><h4 class="name">
+<span class="versionAdded">version added: <a href="/category/version/1.4/">1.4</a></span>jQuery()</h4></li>
+</ul>
+<div class="longdesc">
+<p>In the first formulation listed above,  <code>jQuery()</code> — which can also be written as <code>$()</code> — searches through the DOM for any elements that match the provided selector and creates a new jQuery object that references these elements:</p>
+<pre>$('div.foo');</pre>
+<p>If no elements match the provided selector, the new jQuery object is "empty"; that is, it contains no elements and has <code><a href="http://api.jquery.com/length/">.length</a></code> property of 0.</p>
+<h4 id="selector-context">Selector Context</h4>
+<p>By default, selectors perform their searches within the DOM starting at the document root. However, an alternate context can be given for the search by using the optional second parameter to the  <code>$()</code> function. For example, to do a search within an event handler, the search can be restricted like so:</p>
+<pre>
+$('div.foo').click(function() {
+  $('span', this).addClass('bar');
+});
+</pre>
+<p>When the search for the span selector is restricted to the context of <code>this</code>, only spans within the clicked element will get the additional class.</p>
+<p>Internally, selector context is implemented with the <code>.find()</code> method, so  <code>$('span', this)</code> is equivalent to  <code>$(this).find('span')</code>.</p>
+<h4 id="using-dom-elements">Using DOM elements</h4>
+<p>The second and third formulations of this function create a jQuery object using one or more DOM elements that were already selected in some other way. A common use of this facility is to call jQuery methods on an element that has been passed to a callback function through the keyword <code>this</code>:</p>
+<pre>
+$('div.foo').click(function() {
+  $(this).slideUp();
+});
+</pre>
+<p>This example causes elements to be hidden with a sliding animation when clicked. Because the handler receives the clicked item in the <code>this</code> keyword as a bare DOM element, the element must be passed to the <code>$()</code> function before applying jQuery methods to it.</p>
+<p>XML data returned from an Ajax call can be passed to the <code>$()</code> function so individual elements of the XML structure can be retrieved using <code>.find()</code> and other DOM traversal methods.</p>
+<pre>
+$.post('url.xml', function(data) {
+  var $child = $(data).find('child');
+})
+</pre>
+<h4 id="cloning-jquery-objects">Cloning jQuery Objects</h4>
+<p>When a jQuery object is passed to the <code>$()</code> function, a clone of the object is created. This new jQuery object references the same DOM elements as the initial one.</p>
+<h4 id="returning-empty-set">Returning an Empty Set</h4>
+<p>As of jQuery 1.4, calling the <code>jQuery()</code> method with <em>no arguments</em> returns an empty jQuery set (with a <code><a href="http://api.jquery.com/length/">.length</a></code> property of 0). In previous versions of jQuery, this would return a set containing the document node.</p>
+<h4 id="working-with-plain-objects">Working With Plain Objects</h4>
+<p>At present, the only operations supported on plain JavaScript objects wrapped in jQuery are: <code>.data()</code>,<code>.prop()</code>,<code>.bind()</code>, <code>.unbind()</code>, <code>.trigger()</code> and <code>.triggerHandler()</code>. The use of <code>.data()</code> (or any method requiring <code>.data()</code>) on a plain object will result in a new property on the object called jQuery{randomNumber} (eg. jQuery123456789).</p>
+<pre>
+// define a plain object
+var foo = {foo:'bar', hello:'world'};
+
+// wrap this with jQuery
+var $foo = $(foo);
+
+// test accessing property values
+var test1 = $foo.prop('foo'); // bar
+
+// test setting property values
+$foo.prop('foo', 'foobar');
+var test2 = $foo.prop('foo'); // foobar
+
+// test using .data() as summarized above
+$foo.data('keyName', 'someValue');
+console.log($foo); // will now contain a jQuery{randomNumber} property
+
+// test binding an event name and triggering
+$foo.bind('eventName', function (){
+        console.log('eventName was called');
+});
+
+$foo.trigger('eventName'); // logs 'eventName was called'
+</pre>
+<p>Should <code>.trigger('eventName')</code> be used, it will search for an 'eventName' property on the object and attempt to execute it after any attached jQuery handlers are executed. It does not check whether the property is a function or not. To avoid this behavior, <code>.triggerHandler('eventName')</code> should be used instead.</p>
+<pre>
+$foo.triggerHandler('eventName'); // also logs 'eventName was called'
+</pre>
+</div>
+<h3>Examples:</h3>
+<div class="entry-examples" id="entry-examples">
+<div id="example-0">
+<h4>Example: <span class="desc">Find all p elements that are children of a div element and apply a border to them.</span>
+</h4>
+<pre class="prettyprint"><code class="example demo-code">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;script src="http://code.jquery.com/jquery-latest.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;p&gt;one&lt;/p&gt; &lt;div&gt;&lt;p&gt;two&lt;/p&gt;&lt;/div&gt; &lt;p&gt;three&lt;/p&gt;
+&lt;script&gt;
+  $("div &gt; p").css("border", "1px solid gray");
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div>
+<div id="example-1">
+<h4>Example: <span class="desc">Find all inputs of type radio within the first form in the document.</span>
+</h4>
+<pre class="prettyprint"><code class="example">$("input:radio", document.forms[0]);</code></pre>
+</div>
+<div id="example-2">
+<h4>Example: <span class="desc">Find all div elements within an XML document from an Ajax response.</span>
+</h4>
+<pre class="prettyprint"><code class="example">$("div", xml.responseXML);</code></pre>
+</div>
+<div id="example-3">
+<h4>Example: <span class="desc">Set the background color of the page to black.</span>
+</h4>
+<pre class="prettyprint"><code class="example">$(document.body).css( "background", "black" );</code></pre>
+</div>
+<div id="example-4">
+<h4>Example: <span class="desc">Hide all the input elements within a form.</span>
+</h4>
+<pre class="prettyprint"><code class="example">$(myForm.elements).hide()</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="jQuery2" class="entry method">
+<h2 class="jq-clearfix roundTop section-title">
+<span class="name">jQuery( html [, ownerDocument]  )</span> <span class="returns">Returns: <a class="return" href="http://api.jquery.com/Types/#jQuery">jQuery</a></span>
+</h2>
+<div class="jq-box roundBottom entry-details">
+<p class="desc"><strong>Description: </strong>Creates DOM elements on the fly from the provided string of raw HTML.</p>
+<ul class="signatures">
+<li class="signature" id="jQuery-html-ownerDocument">
+<h4 class="name">
+<span class="versionAdded">version added: <a href="/category/version/1.0/">1.0</a></span>jQuery( html [, ownerDocument] )</h4>
+<p class="arguement"><strong>html</strong>A string of HTML to create on the fly. Note that this parses HTML, <strong>not</strong> XML.</p>
+<p class="arguement"><strong>ownerDocument</strong>A document in which the new elements will be created</p>
+</li>
+<li class="signature" id="jQuery-html-props">
+<h4 class="name">
+<span class="versionAdded">version added: <a href="/category/version/1.4/">1.4</a></span>jQuery( html, props )</h4>
+<p class="arguement"><strong>html</strong>A string defining a single, standalone, HTML element (e.g. &lt;div/&gt; or &lt;div&gt;&lt;/div&gt;).</p>
+<p class="arguement"><strong>props</strong>An map of attributes, events, and methods to call on the newly-created element.</p>
+</li>
+</ul>
+<div class="longdesc">
+<h4 id="creating-new-elements">Creating New Elements</h4>
+<p>If a string is passed as the parameter to <code>$()</code>, jQuery examines the string to see if it looks like HTML (i.e., it has <code>&lt;tag ... &gt;</code> somewhere within the string). If not, the string is interpreted as a selector expression, as explained above. But if the string appears to be an HTML snippet, jQuery attempts to create new DOM elements as described by the HTML. Then a jQuery object is created and returned that refers to these elements. You can perform any of the usual jQuery methods on this object:</p>
+<pre>$('&lt;p id="test"&gt;My &lt;em&gt;new&lt;/em&gt; text&lt;/p&gt;').appendTo('body');</pre>
+<p>If the HTML is more complex than a single tag without attributes, as it is in the above example, the actual creation of the elements is handled by the browser's <code>innerHTML</code> mechanism. In most cases, jQuery creates a new &lt;div&gt; element and sets the innerHTML property of the element to the HTML snippet that was passed in. When the parameter has a single tag, such as  <code>$('&lt;img /&gt;')</code> or  <code>$('&lt;a&gt;&lt;/a&gt;')</code>, jQuery creates the element using the native JavaScript <code>createElement()</code> function.</p>
+<p>When passing in complex HTML, some browsers may not generate a DOM that exactly replicates the HTML source provided. As mentioned, we use the browser's <code>.innerHTML</code> property to parse the passed HTML and insert it into the current document. During this process, some  browsers filter out certain elements such as  <code>&lt;html&gt;</code>,  <code>&lt;title&gt;</code>, or  <code>&lt;head&gt;</code> elements. As a result, the  elements inserted may not be representative of the original string  passed.</p>
+<p> Filtering isn't however just limited to these tags. For example, Internet Explorer prior to version 8 will also convert all <code>href</code> properties on links to absolute URLs, and Internet Explorer prior to version 9 will not correctly handle HTML5 elements without the addition of a separate <a href="http://code.google.com/p/html5shiv/">compatibility layer</a>.</p>
+<p>To ensure cross-platform compatibility, the snippet must be well-formed. Tags that can contain other elements should be paired with a closing tag:</p>
+<pre>$('&lt;a href="http://jquery.com"&gt;&lt;/a&gt;');</pre>
+<p>Alternatively, jQuery allows XML-like tag syntax (with or without a space before the slash):</p>
+<pre>$('&lt;a/&gt;');</pre>
+<p>Tags that cannot contain elements may be quick-closed or not:</p>
+<pre>$('&lt;img /&gt;');
+$('&lt;input&gt;');
+</pre>
+<p>When passing HTML to <code>jQuery()</code>, please also note that text nodes are not treated as DOM elements. With the exception of a few methods (such as <code>.content()</code>), they are generally otherwise ignored or removed. E.g:</p>
+<pre>
+var el = $('1&lt;br/&gt;2&lt;br/&gt;3'); // returns [&lt;br&gt;, "2", &lt;br&gt;] 
+el  = $('1&lt;br/&gt;2&lt;br/&gt;3 &gt;'); // returns [&lt;br&gt;, "2", &lt;br&gt;, "3 &amp;gt;"]
+</pre>
+<p>This behaviour is expected. </p>
+<p>As of jQuery 1.4, the second argument to <code>jQuery()</code> can accept a map consisting of a superset of the properties that can be passed to the <a href="/attr">.attr()</a> method. Furthermore, any <a href="/category/events/">event type</a> can be passed in, and the following jQuery methods can be called: <a href="/val">val</a>, <a href="/css">css</a>, <a href="/html">html</a>, <a href="/text">text</a>, <a href="/data">data</a>, <a href="/width">width</a>, <a href="/height">height</a>, or <a href="/offset">offset</a>. The name <code>"class"</code> must be quoted in the map since it is a JavaScript reserved word, and <code>"className"</code> cannot be used since it is not the correct attribute name. </p>
+<p><strong>Note:</strong> Internet Explorer will not allow you to create an <code>input</code> or <code>button</code> element and change its type; you must specify the type using <code>'&lt;input type="checkbox" /&gt;'</code> for example. A demonstration of this can be seen below:</p>
+<p>Unsupported in IE:</p>
+<pre>
+$('&lt;input /&gt;', {
+    type: 'text',
+    name: 'test'
+}).appendTo("body");
+</pre>
+<p>Supported workaround:</p>
+<pre>
+$('&lt;input type="text" /&gt;').attr({
+    name: 'test'
+}).appendTo("body");
+</pre>
+</div>
+<h3>Examples:</h3>
+<div class="entry-examples" id="entry-examples-1">
+<div id="example-1-0">
+<h4>Example: <span class="desc">Create a div element (and all of its contents) dynamically and append it to the body element. Internally, an element is created and its innerHTML property set to the given markup.</span>
+</h4>
+<pre class="prettyprint"><code class="example">$("&lt;div&gt;&lt;p&gt;Hello&lt;/p&gt;&lt;/div&gt;").appendTo("body")</code></pre>
+</div>
+<div id="example-1-1">
+<h4>Example: <span class="desc">Create some DOM elements.</span>
+</h4>
+<pre class="prettyprint"><code class="example">$("&lt;div/&gt;", {
+  "class": "test",
+  text: "Click me!",
+  click: function(){
+    $(this).toggleClass("test");
+  }
+}).appendTo("body");</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="jQuery3" class="entry method">
+<h2 class="jq-clearfix roundTop section-title">
+<span class="name">jQuery( callback )</span> <span class="returns">Returns: <a class="return" href="http://api.jquery.com/Types/#jQuery">jQuery</a></span>
+</h2>
+<div class="jq-box roundBottom entry-details">
+<p class="desc"><strong>Description: </strong>Binds a function to be executed when the DOM has finished loading.</p>
+<ul class="signatures"><li class="signature" id="jQuery-callback">
+<h4 class="name">
+<span class="versionAdded">version added: <a href="/category/version/1.0/">1.0</a></span>jQuery( callback )</h4>
+<p class="arguement"><strong>callback</strong>The function to execute when the DOM is ready.</p>
+</li></ul>
+<div class="longdesc"><p>This function behaves just like <code>$(document).ready()</code>, in that it should be used to wrap other <code>$()</code> operations on your page that depend on the DOM being ready. While this function is, technically, chainable, there really isn't much use for chaining against it.</p></div>
+<h3>Examples:</h3>
+<div class="entry-examples" id="entry-examples-2">
+<div id="example-2-0">
+<h4>Example: <span class="desc">Execute the function when the DOM is ready to be used.</span>
+</h4>
+<pre class="prettyprint"><code class="example">$(function(){
+   // Document is ready
+ });
+</code></pre>
+</div>
+<div id="example-2-1">
+<h4>Example: <span class="desc">Use both the shortcut for $(document).ready() and the argument to write failsafe jQuery code using the $ alias, without relying on the global alias.</span>
+</h4>
+<pre class="prettyprint"><code class="example">jQuery(function($) {
+    // Your code using failsafe $ alias here...
+  });</code></pre>
+</div>
+</div>
+</div>
+</div>
+
+
+        </div>
+      </div><!-- .post -->
+    <h1 id="comments" class="roundTop section-title">Support and Contributions</h1>
+<div class="jq-box roundBottom">
+  <p>Need help with <strong>jQuery()</strong> or have a question about it? Visit the <a href="http://forum.jquery.com/">jQuery Forum</a> or the <strong>#jquery</strong> channel on <a href="irc://irc.freenode.net/">irc.freenode.net</a>.</p>
+  <p>Think you've discovered a jQuery bug related to <strong>jQuery()</strong>? <a href="http://docs.jquery.com/How_to_Report_Bugs">Report it</a> to the jQuery core team.</p>
+  <p>Found a problem with this documentation? <a href="https://github.com/jquery/api.jquery.com/issues">Report it</a> on the GitHub issue tracker</p>
+
+  <!-- <ul class="comment-instructions">
+    <li><h3 style="margin-top: 0; font-size: 1.4em">Support requests, bug reports, and off-topic comments will be <em>deleted</em> without warning.</h3></li>
+    <li>Please do post corrections or additional examples for jQuery() below. We aim to quickly move corrections into the documentation.</li>
+    <li>If you need help, post at the <a href="http://forum.jquery.com/">forums</a> or in the #jquery IRC channel.</li>
+    <li>Report bugs on the <a href="http://dev.jquery.com/newticket/">bug tracker</a> or the <a href="http://forum.jquery.com/developing-jquery-core">jQuery Forum</a>.</li>
+    <li>Discussions about the API specifically should be addressed in the <a href="http://forum.jquery.com/developing-jquery-core">Developing jQuery Core forum</a>.</li>
+  </ul> -->
+<div style="margin-top:2em;">
+
+<div id="disqus_thread" class="disqus_thread">
+                    <div id="dsq-content">
+
+
+            <ul id="dsq-comments">
+                    <li class="comment even thread-even depth-1" id="dsq-comment-15">
+        <div id="dsq-comment-header-15" class="dsq-comment-header">
+            <cite id="dsq-cite-15">
+                <span id="dsq-author-user-15">bronson</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-15" class="dsq-comment-body">
+            <div id="dsq-comment-message-15" class="dsq-comment-message"><p>&#8220;jQuery examines the string to see if it looks like HTML&#8221;</p>
+<p>How?  Must the HTML string begin with &#39;&lt;&#39;?</p>
+</div>
+        </div>
+    </li>
+
+    <ul class='children'>
+    <li class="comment odd alt depth-2" id="dsq-comment-23">
+        <div id="dsq-comment-header-23" class="dsq-comment-header">
+            <cite id="dsq-cite-23">
+http://www.learningjquery.com/                <span id="dsq-author-user-23">Karl Swedberg</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-23" class="dsq-comment-body">
+            <div id="dsq-comment-message-23" class="dsq-comment-message"><p>It doesn&#39;t need to begin with &#39;&lt;. jQuery uses a regular expression to inspect the string, and the part of it that tests for an HTML-string match is <code>^[^&lt;]*(&lt;[wW]+&gt;)[^&gt;]*$</code>. </p>
+<p>In case you&#39;re not very familiar with regular expressions, it basically checks for something that looks like an HTML tag anywhere within the string.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+</ul>
+</li>
+    <li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-145">
+        <div id="dsq-comment-header-145" class="dsq-comment-header">
+            <cite id="dsq-cite-145">
+                <span id="dsq-author-user-145">MarcusT</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-145" class="dsq-comment-body">
+            <div id="dsq-comment-message-145" class="dsq-comment-message"><p>With regard to the use of jQuery(callback) for executing code when the document is ready, it has never been clear from the documentation whether you can do this any number of times (perhaps at different places in the HTML document) and be assured that each chunk of code will be called after each other, or whether each use of jQuery(callback) overwrites the previous call. While the answer can of course be found by simply testing, this shouldn&#39;t be necessary to be sure, and hence I&#39;d like to see this made abundantly clear in the documentation with an explicit statement.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-even depth-1" id="dsq-comment-9055">
+        <div id="dsq-comment-header-9055" class="dsq-comment-header">
+            <cite id="dsq-cite-9055">
+                <span id="dsq-author-user-9055">Anonymous</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-9055" class="dsq-comment-body">
+            <div id="dsq-comment-message-9055" class="dsq-comment-message"><p>Most examples show $(function() { }) at the top of the script. Picked up a nice tip from Alex Sexton&#8230;a very nice variation of the normal usage: </p>
+<p>      // make an ajax request right away<br />
+      $.ajax({<br />
+        url: &#8216;ajax.php&#8217;,<br />
+          success: function(data) {<br />
+            $(document).ready(function(){  //&lt;&#8211; Hey Guys check this out!<br />
+                //do stuff<br />
+            });<br />
+          }<br />
+        });</p>
+<p>Only the success function waits for the DOM ready. <a href="http://alexsexton.com/?p=22" rel="nofollow">http://alexsexton.com/?p=22</a></p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-9191">
+        <div id="dsq-comment-header-9191" class="dsq-comment-header">
+            <cite id="dsq-cite-9191">
+                <span id="dsq-author-user-9191">Anonymous</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-9191" class="dsq-comment-body">
+            <div id="dsq-comment-message-9191" class="dsq-comment-message"><p>Hi,</p>
+<p>In this example : </p>
+<p>$(&#8220;&#8221;, {<br />
+  &#8220;class&#8221;: &#8220;test&#8221;,<br />
+  text: &#8220;Click me!&#8221;,<br />
+  click: function(){<br />
+    $(this).toggleClass(&#8220;test&#8221;);<br />
+  }<br />
+}).appendTo(&#8220;body&#8221;);</p>
+<p>Why are the props in braces (I assume that&#8217;s the props list, as in the definition &#8220;jQuery( html, props )&#8221;) ?  And why is class in quotes and the other props not in quotes?</p>
+<p>And also why does the defintion say &#8220;jQuery &#8230;&#8221; and the examples all begin with a dollar sign?</p>
+<p>Very confusing for a newbie who likes to learn by precise definitions of language syntax!</p>
+</div>
+        </div>
+    </li>
+
+    <ul class='children'>
+    <li class="comment odd alt depth-2" id="dsq-comment-9505">
+        <div id="dsq-comment-header-9505" class="dsq-comment-header">
+            <cite id="dsq-cite-9505">
+                <span id="dsq-author-user-9505">Jesse Hemminger</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-9505" class="dsq-comment-body">
+            <div id="dsq-comment-message-9505" class="dsq-comment-message"><p>I think that the props parameter must be an object, that is why they are in braces. The braces make an object literal.</p>
+<p>I think class is quotes because class is probably a keyword (reserved word, javascript has lots of them that aren&#8217;t even used). If class wasn&#8217;t in quotes javascript would try to interpret it as a keyword and you would get an error. Because it is in quotes it is interpreted as a string and used as a property name.</p>
+</div>
+        </div>
+    </li>
+
+    <ul class='children'>
+    <li class="comment even depth-3" id="dsq-comment-10043">
+        <div id="dsq-comment-header-10043" class="dsq-comment-header">
+            <cite id="dsq-cite-10043">
+http://edgespan.de/                <span id="dsq-author-user-10043">Alexander Trefz</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-10043" class="dsq-comment-body">
+            <div id="dsq-comment-message-10043" class="dsq-comment-message"><p>Class must be in quotes cause it IS a reserved Keyword. But Firefox wont throw any error, only Webkit :/</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+</ul>
+</li>
+    <li class="comment odd alt depth-2" id="dsq-comment-10148">
+        <div id="dsq-comment-header-10148" class="dsq-comment-header">
+            <cite id="dsq-cite-10148">
+http://danielbrinca.com/                <span id="dsq-author-user-10148">Daniel Brinca</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-10148" class="dsq-comment-body dsq-comment-body-10148">
+            <div id="dsq-comment-message-10148" class="dsq-comment-message"><p>The braces {} are a shorthand in Javascript to create an object, and are equivalent to the &#8220;new Object()&#8221; syntax.<br />
+BTW, you can also create an array using square brackets [] in a similar way, being equivalent to the &#8220;new Array()&#8221; syntax.</p>
+<p>The dollar $ is an alias to the jQuery class, that may be used as a shorthand to save typing (and look cooler <img src='http://api.jquery.com/wp-includes/images/smilies/icon_wink.gif' alt=';)' class='wp-smiley' /> ), so $() and jQuery() are equivalent.</p>
+<p>As for &#8220;class&#8221; being in quotes (it also works without the quotes), I guess it&#8217;s just to show that it&#8217;s possible to do it that way, should you want to avoid conflict with a global variable or javascript keyword.</p>
+<p>EDIT: Oops, didn&#8217;t see there were already many replies.. <img src='http://api.jquery.com/wp-includes/images/smilies/icon_smile.gif' alt=':)' class='wp-smiley' /> </p>
+</div>
+        </div>
+    </li>
+
+    </li>
+</ul>
+</li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-776">
+        <div id="dsq-comment-header-776" class="dsq-comment-header">
+            <cite id="dsq-cite-776">
+http://openid-provider.appspot.com/mrajcok                <span id="dsq-author-user-776">Mark Rajcok</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-776" class="dsq-comment-body">
+            <div id="dsq-comment-message-776" class="dsq-comment-message"><p>At the beginning of the documentation, I think it would be very helpful (for those new to jQuery) to state that $() is an alias for jQuery().</p>
+<p>The wording in &#8220;Creating New Elements&#8221; seems to imply that tags that CAN contain elements should be XML-like and contain the trailing slash.  If this is true, the last example in that section should be updated to include the slash:<br />$(&#8220;&lt;div/&gt;&#8221;, {    &lt;&lt;&#8212;-  note &#8220;/&#8221; added<br />  &#8220;class&#8221;: &#8220;test&#8221;,<br />  &#8230;<br />If it doesn&#39;t matter if the slash is present, then I suggest changing this text: &#8220;XML-like tag syntax (with or without a space before the slash)&#8221; to something else.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-9745">
+        <div id="dsq-comment-header-9745" class="dsq-comment-header">
+            <cite id="dsq-cite-9745">
+                <span id="dsq-author-user-9745">Rob</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-9745" class="dsq-comment-body">
+            <div id="dsq-comment-message-9745" class="dsq-comment-message"><p>It would be useful if the documentation would give more information on specifying an owner document when adding newly created HTML.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-1622">
+        <div id="dsq-comment-header-1622" class="dsq-comment-header">
+            <cite id="dsq-cite-1622">
+http://bassistance.de/                <span id="dsq-author-user-1622">Jörn Zaefferer</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-1622" class="dsq-comment-body">
+            <div id="dsq-comment-message-1622" class="dsq-comment-message"><p>The last variant, jQuery(), lacks any details.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-11345">
+        <div id="dsq-comment-header-11345" class="dsq-comment-header">
+            <cite id="dsq-cite-11345">
+http://twitter.com/josotoru                <span id="dsq-author-user-11345">Jose Soto Ruiz</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-11345" class="dsq-comment-body">
+            <div id="dsq-comment-message-11345" class="dsq-comment-message"><p>Ok, that example:</p>
+<p> jQuery(&#8221;,{<br />
+  class : &#8216;myclass&#8217;,<br />
+  css   : {<br />
+     &#8220;position&#8221;:&#8221;absolute&#8221;,<br />
+     &#8220;left&#8221;: &#8220;10px&#8221;,<br />
+     &#8220;top&#8221; : &#8220;20px&#8221;,<br />
+     &#8220;display&#8221; : &#8220;none&#8221;,<br />
+     &#8220;z-index&#8221; : &#8220;90000&#8243;<br />
+   }<br />
+ }).appendTo(&#8220;body&#8221;);</p>
+<p>Not works in IE, that message is: Unexpected identifier, string or number :S</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-11346">
+        <div id="dsq-comment-header-11346" class="dsq-comment-header">
+            <cite id="dsq-cite-11346">
+http://twitter.com/josotoru                <span id="dsq-author-user-11346">Jose Soto Ruiz</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-11346" class="dsq-comment-body">
+            <div id="dsq-comment-message-11346" class="dsq-comment-message"><p>Ok, that example:</p>
+<p> jQuery(&#8221;,{<br />
+  class : &#8216;myclass&#8217;,<br />
+  css   : {<br />
+     &#8220;position&#8221;:&#8221;absolute&#8221;,<br />
+     &#8220;left&#8221;: &#8220;10px&#8221;,<br />
+     &#8220;top&#8221; : &#8220;20px&#8221;,<br />
+     &#8220;display&#8221; : &#8220;none&#8221;,<br />
+     &#8220;z-index&#8221; : &#8220;90000&#8243;<br />
+   }<br />
+ }).appendTo(&#8220;body&#8221;);</p>
+<p>Not works in IE, that message is: Unexpected identifier, string or number :S</p>
+</div>
+        </div>
+    </li>
+
+    <ul class='children'>
+    <li class="comment odd alt depth-2" id="dsq-comment-3269">
+        <div id="dsq-comment-header-3269" class="dsq-comment-header">
+            <cite id="dsq-cite-3269">
+http://teppicymon.myopenid.com/                <span id="dsq-author-user-3269">Richard Green</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3269" class="dsq-comment-body">
+            <div id="dsq-comment-message-3269" class="dsq-comment-message"><p>Try putting the class part in quotes, like so: (class is a reserved word)</p>
+<p>jQuery(&#39;&lt;div /&gt;&#39;,{<br />&#8220;class&#8221; : &#39;myclass&#39;,<br />&#8220;css&#8221; : {<br />&#8220;position&#8221;:&#8221;absolute&#8221;,<br />&#8220;left&#8221;: &#8220;10px&#8221;,<br />&#8220;top&#8221; : &#8220;20px&#8221;,<br />&#8220;display&#8221; : &#8220;none&#8221;,<br />&#8220;z-index&#8221; : &#8220;90000&#8243;<br />}<br />}).appendTo(&#8220;body&#8221;);</p>
+</div>
+        </div>
+    </li>
+
+    <ul class='children'>
+    <li class="comment even depth-3" id="dsq-comment-12478">
+        <div id="dsq-comment-header-12478" class="dsq-comment-header">
+            <cite id="dsq-cite-12478">
+                <span id="dsq-author-user-12478">SiRiS</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-12478" class="dsq-comment-body">
+            <div id="dsq-comment-message-12478" class="dsq-comment-message"><p>The problem that I see is in the DIV tag &#8216;identifier&#8217;&#8230;</p>
+<p>Use this:<br />
+jQuery (&#8221;,{..}).appendTo(&#8216;body&#8217;);</p>
+<p>*Notice the self closing  identifier.</p>
+<p>&lt;{;o)~</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+</ul>
+</li>
+    <li class="comment odd alt depth-2" id="dsq-comment-12637">
+        <div id="dsq-comment-header-12637" class="dsq-comment-header">
+            <cite id="dsq-cite-12637">
+http://twitter.com/aloon                <span id="dsq-author-user-12637">Alex G. Lacasa</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-12637" class="dsq-comment-body">
+            <div id="dsq-comment-message-12637" class="dsq-comment-message"><p>simply jQuery( html, props ) not work in IE8</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+</ul>
+</li>
+    <li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-4323">
+        <div id="dsq-comment-header-4323" class="dsq-comment-header">
+            <cite id="dsq-cite-4323">
+                <span id="dsq-author-user-4323">Kecs</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-4323" class="dsq-comment-body">
+            <div id="dsq-comment-message-4323" class="dsq-comment-message"><p>What if there s more than one $(function(){&#8230;}), because of several linked script?</p>
+</div>
+        </div>
+    </li>
+
+    <ul class='children'>
+    <li class="comment odd alt depth-2" id="dsq-comment-4560">
+        <div id="dsq-comment-header-4560" class="dsq-comment-header">
+            <cite id="dsq-cite-4560">
+http://pikadudeno1.livejournal.com/                <span id="dsq-author-user-4560">Pikadude No. 1</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-4560" class="dsq-comment-body">
+            <div id="dsq-comment-message-4560" class="dsq-comment-message"><p>The $ variable will belong to whichever script was linked to last, since later definitions override earlier ones. If jQuery is linked to last, you can call jQuery.noConflict() to revert $ to its second-to-last definition.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+</ul>
+</li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-4654">
+        <div id="dsq-comment-header-4654" class="dsq-comment-header">
+            <cite id="dsq-cite-4654">
+                <span id="dsq-author-user-4654">Yeikos</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-4654" class="dsq-comment-body">
+            <div id="dsq-comment-message-4654" class="dsq-comment-message"><p>var content = &#39;&lt;script&gt;var x = 1;&lt;/&#39;+&#39;script&gt;&#39;;<br />$(content).find(&#39;script&#39;)[0]; // &gt;&gt; undefined</p>
+<p>why?</p>
+</div>
+        </div>
+    </li>
+
+    <ul class='children'>
+    <li class="comment odd alt depth-2" id="dsq-comment-4736">
+        <div id="dsq-comment-header-4736" class="dsq-comment-header">
+            <cite id="dsq-cite-4736">
+http://www.learningjquery.com/                <span id="dsq-author-user-4736">Karl Swedberg</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-4736" class="dsq-comment-body">
+            <div id="dsq-comment-message-4736" class="dsq-comment-message"><p>&#8230;because .find() traverses &#8220;down.&#8221;</p>
+<p>$(content)[0]; // &gt;&gt; &lt;script&gt;</p>
+</div>
+        </div>
+    </li>
+
+    <ul class='children'>
+    <li class="comment even depth-3" id="dsq-comment-4742">
+        <div id="dsq-comment-header-4742" class="dsq-comment-header">
+            <cite id="dsq-cite-4742">
+                <span id="dsq-author-user-4742">Yeikos</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-4742" class="dsq-comment-body">
+            <div id="dsq-comment-message-4742" class="dsq-comment-message"><p>but i dont know where is script tag, i want use the selector for search in a string like in a DOM</p>
+<p>thanks for reply</p>
+</div>
+        </div>
+    </li>
+
+    <ul class='children'>
+    <li class="comment odd alt depth-4" id="dsq-comment-4753">
+        <div id="dsq-comment-header-4753" class="dsq-comment-header">
+            <cite id="dsq-cite-4753">
+http://www.learningjquery.com/                <span id="dsq-author-user-4753">Karl Swedberg</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-4753" class="dsq-comment-body">
+            <div id="dsq-comment-message-4753" class="dsq-comment-message"><p>It isn&#39;t in the DOM yet. You have just created a disconnected node. And it isn&#39;t a string at that point. I&#39;m confused about why you would have a need to do this if you&#39;re creating a single script element. In any case, this is turning into a support request, so if you would be so kind as to seek help on the <a href="http://forum.jquery.com/" rel="nofollow">jQuery forum</a>, I would greatly appreciate it.</p>
+<p>thanks</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+    <li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-12122">
+        <div id="dsq-comment-header-12122" class="dsq-comment-header">
+            <cite id="dsq-cite-12122">
+http://twitter.com/bretto                <span id="dsq-author-user-12122">brett ohland</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-12122" class="dsq-comment-body">
+            <div id="dsq-comment-message-12122" class="dsq-comment-message"><p>I&#8217;e searched high and low in the documentation and I can&#8217;t seem to find out how to properly add the hover event (without any anonymous functions) upon element creation.</p>
+<p>This doesn&#8217;t seem to work:<br />
+$(&#8221;, {<br />
+    click: object.clickEvent,<br />
+    hover: (object.mouseOverEvent, object.mouseOutEvent)<br />
+}).appendTo(containingDiv)</p>
+<p>But this does:<br />
+$(&#8221;, {<br />
+    click: object.clickEvent,<br />
+    mouseenter: object.mouseOverEvent,<br />
+    mouseleave: object.mouseOutEvent<br />
+}).appendTo(containingDiv)</p>
+<p>Any ideas?</p>
+</div>
+        </div>
+    </li>
+
+    <ul class='children'>
+    <li class="comment odd alt depth-2" id="dsq-comment-6599">
+        <div id="dsq-comment-header-6599" class="dsq-comment-header">
+            <cite id="dsq-cite-6599">
+                <span id="dsq-author-user-6599">Emtucifor</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-6599" class="dsq-comment-body">
+            <div id="dsq-comment-message-6599" class="dsq-comment-message"><p>var x = (fn1, fn2);</p>
+<p>This is illegal syntax, and is what you&#39;re trying to assign to the hover property of the object.</p>
+<p>$(&#39;&lt;div&gt;&#39;)<br />   .click(object.clickEvent)<br />   .hover(object.mouseOverEvent, object.mouseOutEvent)<br />   .appendTo(containingDiv);</p>
+<p>Though, I could be missing some way that this is legal, it seems unlikely to me.&lt;/div&gt;</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even depth-2" id="dsq-comment-7460">
+        <div id="dsq-comment-header-7460" class="dsq-comment-header">
+            <cite id="dsq-cite-7460">
+http://www.tentonaxe.com                <span id="dsq-author-user-7460">Kevin</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-7460" class="dsq-comment-body">
+            <div id="dsq-comment-message-7460" class="dsq-comment-message"><p>the hover event is a short hand event that binds to both the mouseover and mouseout events. instead, you should be doing this:<br />$(&#39;&lt;div&gt;&#39;, {<br />click: object.clickEvent,<br />mouseover: object.mouseOverEvent, <br />mouseout: object.mouseOutEvent<br />}).appendTo(containingDiv)&lt;/div&gt;</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+</ul>
+</li>
+    <li class="comment odd alt thread-even depth-1" id="dsq-comment-5403">
+        <div id="dsq-comment-header-5403" class="dsq-comment-header">
+            <cite id="dsq-cite-5403">
+http://www.professionalsofttech.com                <span id="dsq-author-user-5403">Tusharr_1987</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-5403" class="dsq-comment-body">
+            <div id="dsq-comment-message-5403" class="dsq-comment-message"><p>hello everyone i want to ask that is it necessary to create anonymous functions for event handlers such as focusin,focusout even if the event requires only one statement to be executed?</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-5501">
+        <div id="dsq-comment-header-5501" class="dsq-comment-header">
+            <cite id="dsq-cite-5501">
+                <span id="dsq-author-user-5501">Havvy</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-5501" class="dsq-comment-body">
+            <div id="dsq-comment-message-5501" class="dsq-comment-message"><p>&#8220;This argument accepts a superset of properties that can be passed to the .attr() method. Furthermore, any event type can be passed in, and the following jQuery methods can be called: val, css, html, text, data, width, height, or offset.&#8221;</p>
+<p>How does it know which is an attribute and which is an event type?  Does it catch custom events?</p>
+</div>
+        </div>
+    </li>
+
+    <ul class='children'>
+    <li class="comment odd alt depth-2" id="dsq-comment-6370">
+        <div id="dsq-comment-header-6370" class="dsq-comment-header">
+            <cite id="dsq-cite-6370">
+                <span id="dsq-author-user-6370">Balee86</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-6370" class="dsq-comment-body">
+            <div id="dsq-comment-message-6370" class="dsq-comment-message"><p>i think that for attributes you have to use &#8221;  &#8220;, for events, only the name of event.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+</ul>
+</li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-5563">
+        <div id="dsq-comment-header-5563" class="dsq-comment-header">
+            <cite id="dsq-cite-5563">
+                <span id="dsq-author-user-5563">aina</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-5563" class="dsq-comment-body">
+            <div id="dsq-comment-message-5563" class="dsq-comment-message"><p>Hi all,<br />Does anyone know how to create a new object with jQuery? <br />And how about object inheritance?<br />Thanks</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-6148">
+        <div id="dsq-comment-header-6148" class="dsq-comment-header">
+            <cite id="dsq-cite-6148">
+                <span id="dsq-author-user-6148">Phi Khanh</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-6148" class="dsq-comment-body">
+            <div id="dsq-comment-message-6148" class="dsq-comment-message"><p>var html = &#8220;&lt;ul&gt;&lt;li&gt;1&lt;/li&gt;&lt;li&gt;2&lt;/li&gt;&lt;/ul&gt;&#8221;;<br />var example = $(html, { &#8220;class&#8221;: &#8220;pk_slider_clicker&#8221; });</p>
+<p>doesn&#39;t work for me? IE said: &#8220;Object doesn&#39;t support this property or method&#8221;</p>
+</div>
+        </div>
+    </li>
+
+    <ul class='children'>
+    <li class="comment even depth-2" id="dsq-comment-6366">
+        <div id="dsq-comment-header-6366" class="dsq-comment-header">
+            <cite id="dsq-cite-6366">
+                <span id="dsq-author-user-6366">Raul Castro</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-6366" class="dsq-comment-body">
+            <div id="dsq-comment-message-6366" class="dsq-comment-message"><p>try not to use the reserved word &#39;html&#39;</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt depth-2" id="dsq-comment-8181">
+        <div id="dsq-comment-header-8181" class="dsq-comment-header">
+            <cite id="dsq-cite-8181">
+http://waltersmith.us/                <span id="dsq-author-user-8181">Walter Smith</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-8181" class="dsq-comment-body">
+            <div id="dsq-comment-message-8181" class="dsq-comment-message"><p>That form of $ only works when the first argument is a simple tag, like $(&#39;&lt;ul&gt;&#39;, {&#8230;}). Use $(&#39;&#8230;bunch of html&#8230;&#39;).attr({&#8220;class&#8221;: &#8220;pk_slider_clicker&#8221;}) instead.&lt;/ul&gt;</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+</ul>
+</li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-6197">
+        <div id="dsq-comment-header-6197" class="dsq-comment-header">
+            <cite id="dsq-cite-6197">
+                <span id="dsq-author-user-6197">Oipip</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-6197" class="dsq-comment-body">
+            <div id="dsq-comment-message-6197" class="dsq-comment-message"><p>ytutuu</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-6196">
+        <div id="dsq-comment-header-6196" class="dsq-comment-header">
+            <cite id="dsq-cite-6196">
+                <span id="dsq-author-user-6196">Hola</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-6196" class="dsq-comment-body">
+            <div id="dsq-comment-message-6196" class="dsq-comment-message"><p>hola</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-6462">
+        <div id="dsq-comment-header-6462" class="dsq-comment-header">
+            <cite id="dsq-cite-6462">
+http://twitter.com/wconcepts                <span id="dsq-author-user-6462">Colin Williams</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-6462" class="dsq-comment-body">
+            <div id="dsq-comment-message-6462" class="dsq-comment-message"><p>Are context searches more efficient/faster than those that traverse the entire DOM? Should context searches be used whenever possible for this reason?</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-7011">
+        <div id="dsq-comment-header-7011" class="dsq-comment-header">
+            <cite id="dsq-cite-7011">
+                <span id="dsq-author-user-7011">Sam Bronson</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-7011" class="dsq-comment-body">
+            <div id="dsq-comment-message-7011" class="dsq-comment-message"><p>Wouldn&#39;t it be clearer if the documentation for the &#8220;jQuery( element )&#8221; form, and possibly the &#8220;jQuery( elementArray )&#8221; form, would be stated in terms of DOM nodes rather than elements? At least, that would make it much clearer that it&#39;s OK to pass in a Document node rather than an Element node.</p>
+<p>Also, I&#39;m a bit puzzled as to why the first section covers all of these forms, which seems like a fairly mixed bag:</p>
+<p>    * jQuery( selector, [ context ] )<br />    * jQuery( element )<br />    * jQuery( elementArray )<br />    * jQuery( jQuery object )<br />    * jQuery()</p>
+<p>I think it would make more sense to split out at least &#8220;jQuery( element )&#8221; and &#8220;jQuery( elementArray )&#8221;, and I&#39;m not at all sure it wouldn&#39;t be good for each of the remaining forms to have a section to itself.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-7194">
+        <div id="dsq-comment-header-7194" class="dsq-comment-header">
+            <cite id="dsq-cite-7194">
+                <span id="dsq-author-user-7194">Fjanon</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-7194" class="dsq-comment-body">
+            <div id="dsq-comment-message-7194" class="dsq-comment-message"><p>What does jQuery return for $(&#39;div.foo&#39;) if there is no match? Empty array? How can we test there is a match or not?</p>
+</div>
+        </div>
+    </li>
+
+    <ul class='children'>
+    <li class="comment odd alt depth-2" id="dsq-comment-7242">
+        <div id="dsq-comment-header-7242" class="dsq-comment-header">
+            <cite id="dsq-cite-7242">
+http://www.learningjquery.com/                <span id="dsq-author-user-7242">Karl Swedberg</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-7242" class="dsq-comment-body">
+            <div id="dsq-comment-message-7242" class="dsq-comment-message"><p>It returns an empty jQuery object (with length == 0). You can check the length property to see if there is a match.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even depth-2" id="dsq-comment-7653">
+        <div id="dsq-comment-header-7653" class="dsq-comment-header">
+            <cite id="dsq-cite-7653">
+                <span id="dsq-author-user-7653">chris</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-7653" class="dsq-comment-body">
+            <div id="dsq-comment-message-7653" class="dsq-comment-message"><p>it returns &#39;null&#39;, and testing for length will give a type error</p>
+</div>
+        </div>
+    </li>
+
+    <ul class='children'>
+    <li class="comment odd alt depth-3" id="dsq-comment-8128">
+        <div id="dsq-comment-header-8128" class="dsq-comment-header">
+            <cite id="dsq-cite-8128">
+                <span id="dsq-author-user-8128">Jonathan</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-8128" class="dsq-comment-body">
+            <div id="dsq-comment-message-8128" class="dsq-comment-message"><p>false</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+</ul>
+</li>
+</ul>
+</li>
+    <li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-7666">
+        <div id="dsq-comment-header-7666" class="dsq-comment-header">
+            <cite id="dsq-cite-7666">
+                <span id="dsq-author-user-7666">ThomasW</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-7666" class="dsq-comment-body">
+            <div id="dsq-comment-message-7666" class="dsq-comment-message"><p>Perhaps the &#39;$&#39; function &#8212; since it&#39;s the major part of the API &#8212; should be more primarily identified, in the documentation?</p>
+<p>It&#39;s taken me 15 minutes to find out it&#39;s not core JS syntax, to find out it&#39;s an alias for jQuery() function. Shouldn&#39;t it be in the &#39;Core&#39; or &#39;Selection/ Traversal&#39; section of the docs? If not all of these?</p>
+</div>
+        </div>
+    </li>
+
+    <ul class='children'>
+    <li class="comment odd alt depth-2" id="dsq-comment-8157">
+        <div id="dsq-comment-header-8157" class="dsq-comment-header">
+            <cite id="dsq-cite-8157">
+                <span id="dsq-author-user-8157">Foo Bar</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-8157" class="dsq-comment-body">
+            <div id="dsq-comment-message-8157" class="dsq-comment-message"><p>From the first sentence on this page: &#8220;In the first formulation listed above, jQuery() — which can also be written as $() — searches through the DOM&#8230;&#8221;</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+</ul>
+</li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-7834">
+        <div id="dsq-comment-header-7834" class="dsq-comment-header">
+            <cite id="dsq-cite-7834">
+http://twitter.com/johnmcmillion                <span id="dsq-author-user-7834">John McMillion</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-7834" class="dsq-comment-body">
+            <div id="dsq-comment-message-7834" class="dsq-comment-message"><p>Is there any way to pass the document context when doing a create element?  If I have an iframe defined as follows..<br />var f = window.frames.myIframe;<br />How can I do this in jquery?<br />var d = f.document.createElement(&#8220;div&#8221;);<br />if I do $(&#8220;&lt;div&gt;&#8221;) it creates it on the parent frame document, not the iframe.  This causes an invalid argument exception in IE 7 when doing a replaceChild().<br />Please advise!  Thanks!&lt;/div&gt;</p>
+</div>
+        </div>
+    </li>
+
+    <ul class='children'>
+    <li class="comment odd alt depth-2" id="dsq-comment-8623">
+        <div id="dsq-comment-header-8623" class="dsq-comment-header">
+            <cite id="dsq-cite-8623">
+                <span id="dsq-author-user-8623">Info</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-8623" class="dsq-comment-body">
+            <div id="dsq-comment-message-8623" class="dsq-comment-message"><p>var myFrame=window.frames.myIframe;<br />if(!myFrame.contentDocument) { myFrame.contentDocument=myFrame.contentWindow.document;<br />}<br />$(&#39;div&#39;,myFrame.contentDocument);</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+</ul>
+</li>
+    <li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-7976">
+        <div id="dsq-comment-header-7976" class="dsq-comment-header">
+            <cite id="dsq-cite-7976">
+http://twitter.com/johnmcmillion                <span id="dsq-author-user-7976">John McMillion</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-7976" class="dsq-comment-body">
+            <div id="dsq-comment-message-7976" class="dsq-comment-message"><p>Is there any way to pass the document context when doing a create element?  If I have an iframe defined as follows..<br />var f = window.frames.myIframe;<br />How can I do this in jquery?<br />var d = f.document.createElement(&#8220;div&#8221;);<br />if I do $(&#8220;&lt;div&gt;&#8221;) it creates it on the parent frame document, not the iframe.  This causes an invalid argument exception in IE 7 when doing a replaceChild().<br />Please advise!  Thanks!&lt;/div&gt;</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-even depth-1" id="dsq-comment-8113">
+        <div id="dsq-comment-header-8113" class="dsq-comment-header">
+            <cite id="dsq-cite-8113">
+                <span id="dsq-author-user-8113">Yshivambp</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-8113" class="dsq-comment-body">
+            <div id="dsq-comment-message-8113" class="dsq-comment-message"><p>jquery.schedule()<br />any one use</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-8228">
+        <div id="dsq-comment-header-8228" class="dsq-comment-header">
+            <cite id="dsq-cite-8228">
+                <span id="dsq-author-user-8228">Victor</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-8228" class="dsq-comment-body">
+            <div id="dsq-comment-message-8228" class="dsq-comment-message"><p>How can I work with DOM of child window document?</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-even depth-1" id="dsq-comment-8395">
+        <div id="dsq-comment-header-8395" class="dsq-comment-header">
+            <cite id="dsq-cite-8395">
+http://twitter.com/magicaj                <span id="dsq-author-user-8395">Adam Ayres</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-8395" class="dsq-comment-body">
+            <div id="dsq-comment-message-8395" class="dsq-comment-message"><p>&#8230;</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-8576">
+        <div id="dsq-comment-header-8576" class="dsq-comment-header">
+            <cite id="dsq-cite-8576">
+http://www.realestateanalysisfree.com/                <span id="dsq-author-user-8576">Real Estate Analysis</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-8576" class="dsq-comment-body">
+            <div id="dsq-comment-message-8576" class="dsq-comment-message"><p>This works great. I am just redoing now all my older javascript files, because using the selectors this way &#8211; the code is just so much more readable. I love jQuery!</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-even depth-1" id="dsq-comment-8650">
+        <div id="dsq-comment-header-8650" class="dsq-comment-header">
+            <cite id="dsq-cite-8650">
+http://www.facebook.com/iulian.manea                <span id="dsq-author-user-8650">Iulian Manea</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-8650" class="dsq-comment-body">
+            <div id="dsq-comment-message-8650" class="dsq-comment-message"><p>hehe</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-4677">
+        <div id="dsq-comment-header-4677" class="dsq-comment-header">
+            <cite id="dsq-cite-4677">
+                <span id="dsq-author-user-4677">Palini</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-4677" class="dsq-comment-body">
+            <div id="dsq-comment-message-4677" class="dsq-comment-message"><p>I dnt know wat u saying man!!!</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+            </ul>
+
+
+        </div>
+
+    </div>
+</div>
+</div>
+    </div><!-- #content -->
+  </div><!-- #jq-primaryContent -->
+
+  <div id="jq-interiorNavigation" >
+    <h2 class="jq-clearfix roundTop section-title"><a href="/">jQuery API</a></h2>
+    <div class="roundBottom jq-box">
+      <ul class="xoxo">
+        <li>
+          <ul>
+            <li><a href="http://api.jquery.com/category/version/1.7/">New or Changed in 1.7</a></li>
+            <li><a href="http://api.jquery.com/api/" >Raw XML API Dump</a></li>
+            <li><a href="http://api.jquery.com/browser/">Dynamic API Browser</a></li>
+            <li><a href="http://www.packtpub.com/jquery-1-4-reference-guide/book">jQuery API Book</a></li>
+          </ul>
+      </ul>
+<!--
+      <br />
+      <div class="sideBarFeature">
+        <strong>Dynamic API Browser</strong>
+        <a href="http://api.jquery.com/browser/" style="border:0px;"><img src="http://static.jquery.com/api/images/badge.jpg" style="border:0px;width:100%;"/></a>
+      </div>
+      <div class="sideBarFeature">
+        <strong>jQuery API Book</strong>
+        <a href="http://www.packtpub.com/" style="border-width:0;"><img src="http://static.jquery.com/books/jquery-ref-guide.png" style="border-width:0;"/></a>
+      </div>
+-->
+    </div>
+
+    <h2 class="jq-clearfix roundTop section-title">Browse the jQuery API</h2>
+    <div class="roundBottom jq-box">
+    <ul class="xoxo">
+
+      <li id="categories">
+        <ul>
+        <li><a href="/">All</a></li>
+    <li class="cat-item cat-item-13"><a href="http://api.jquery.com/category/ajax/" title="View all posts filed under Ajax">Ajax</a>
+<ul class='children'>
+    <li class="cat-item cat-item-39"><a href="http://api.jquery.com/category/ajax/global-ajax-event-handlers/" title="View all posts filed under Global Ajax Event Handlers">Global Ajax Event Handlers</a>
+</li>
+    <li class="cat-item cat-item-40"><a href="http://api.jquery.com/category/ajax/helper-functions/" title="View all posts filed under Helper Functions">Helper Functions</a>
+</li>
+    <li class="cat-item cat-item-37"><a href="http://api.jquery.com/category/ajax/low-level-interface/" title="View all posts filed under Low-Level Interface">Low-Level Interface</a>
+</li>
+    <li class="cat-item cat-item-38"><a href="http://api.jquery.com/category/ajax/shorthand-methods/" title="View all posts filed under Shorthand Methods">Shorthand Methods</a>
+</li>
+</ul>
+</li>
+    <li class="cat-item cat-item-7"><a href="http://api.jquery.com/category/attributes/" title="View all posts filed under Attributes">Attributes</a>
+</li>
+    <li class="cat-item cat-item-99"><a href="http://api.jquery.com/category/callbacks-object/" title="View all posts filed under Callbacks Object">Callbacks Object</a>
+</li>
+    <li class="cat-item cat-item-5"><a href="http://api.jquery.com/category/core/" title="View all posts filed under Core">Core</a>
+</li>
+    <li class="cat-item cat-item-10"><a href="http://api.jquery.com/category/css/" title="View all posts filed under CSS">CSS</a>
+</li>
+    <li class="cat-item cat-item-51"><a href="http://api.jquery.com/category/data/" title="View all posts filed under Data">Data</a>
+</li>
+    <li class="cat-item cat-item-93"><a href="http://api.jquery.com/category/deferred-object/" title="View all posts filed under Deferred Object">Deferred Object</a>
+</li>
+    <li class="cat-item cat-item-97"><a href="http://api.jquery.com/category/deprecated/" title="View all posts filed under Deprecated">Deprecated</a>
+</li>
+    <li class="cat-item cat-item-50"><a href="http://api.jquery.com/category/dimensions/" title="View all posts filed under Dimensions">Dimensions</a>
+</li>
+    <li class="cat-item cat-item-12"><a href="http://api.jquery.com/category/effects/" title="View all posts filed under Effects">Effects</a>
+<ul class='children'>
+    <li class="cat-item cat-item-52"><a href="http://api.jquery.com/category/effects/basics/" title="View all posts filed under Basics">Basics</a>
+</li>
+    <li class="cat-item cat-item-55"><a href="http://api.jquery.com/category/effects/custom-effects/" title="View all posts filed under Custom">Custom</a>
+</li>
+    <li class="cat-item cat-item-54"><a href="http://api.jquery.com/category/effects/fading/" title="View all posts filed under Fading">Fading</a>
+</li>
+    <li class="cat-item cat-item-53"><a href="http://api.jquery.com/category/effects/sliding/" title="View all posts filed under Sliding">Sliding</a>
+</li>
+</ul>
+</li>
+    <li class="cat-item cat-item-11"><a href="http://api.jquery.com/category/events/" title="View all posts filed under Events">Events</a>
+<ul class='children'>
+    <li class="cat-item cat-item-36"><a href="http://api.jquery.com/category/events/browser-events/" title="View all posts filed under Browser Events">Browser Events</a>
+</li>
+    <li class="cat-item cat-item-32"><a href="http://api.jquery.com/category/events/document-loading/" title="View all posts filed under Document Loading">Document Loading</a>
+</li>
+    <li class="cat-item cat-item-31"><a href="http://api.jquery.com/category/events/event-handler-attachment/" title="View all posts filed under Event Handler Attachment">Event Handler Attachment</a>
+</li>
+    <li class="cat-item cat-item-66"><a href="http://api.jquery.com/category/events/event-object/" title="View all posts filed under Event Object">Event Object</a>
+</li>
+    <li class="cat-item cat-item-34"><a href="http://api.jquery.com/category/events/form-events/" title="View all posts filed under Form Events">Form Events</a>
+</li>
+    <li class="cat-item cat-item-35"><a href="http://api.jquery.com/category/events/keyboard-events/" title="View all posts filed under Keyboard Events">Keyboard Events</a>
+</li>
+    <li class="cat-item cat-item-33"><a href="http://api.jquery.com/category/events/mouse-events/" title="View all posts filed under Mouse Events">Mouse Events</a>
+</li>
+</ul>
+</li>
+    <li class="cat-item cat-item-56"><a href="http://api.jquery.com/category/forms/" title="View all posts filed under Forms">Forms</a>
+</li>
+    <li class="cat-item cat-item-67"><a href="http://api.jquery.com/category/internals/" title="View all posts filed under Internals">Internals</a>
+</li>
+    <li class="cat-item cat-item-9"><a href="http://api.jquery.com/category/manipulation/" title="View all posts filed under Manipulation">Manipulation</a>
+<ul class='children'>
+    <li class="cat-item cat-item-25"><a href="http://api.jquery.com/category/manipulation/class-attribute/" title="View all posts filed under Class Attribute">Class Attribute</a>
+</li>
+    <li class="cat-item cat-item-29"><a href="http://api.jquery.com/category/manipulation/copying/" title="View all posts filed under Copying">Copying</a>
+</li>
+    <li class="cat-item cat-item-28"><a href="http://api.jquery.com/category/manipulation/dom-insertion-around/" title="View all posts filed under DOM Insertion, Around">DOM Insertion, Around</a>
+</li>
+    <li class="cat-item cat-item-27"><a href="http://api.jquery.com/category/manipulation/dom-insertion-inside/" title="View all posts filed under DOM Insertion, Inside">DOM Insertion, Inside</a>
+</li>
+    <li class="cat-item cat-item-48"><a href="http://api.jquery.com/category/manipulation/dom-insertion-outside/" title="View all posts filed under DOM Insertion, Outside">DOM Insertion, Outside</a>
+</li>
+    <li class="cat-item cat-item-30"><a href="http://api.jquery.com/category/manipulation/dom-removal/" title="View all posts filed under DOM Removal">DOM Removal</a>
+</li>
+    <li class="cat-item cat-item-26"><a href="http://api.jquery.com/category/manipulation/dom-replacement/" title="View all posts filed under DOM Replacement">DOM Replacement</a>
+</li>
+    <li class="cat-item cat-item-23"><a href="http://api.jquery.com/category/manipulation/general-attributes/" title="View all posts filed under General Attributes">General Attributes</a>
+</li>
+    <li class="cat-item cat-item-24"><a href="http://api.jquery.com/category/manipulation/style-properties/" title="View all posts filed under Style Properties">Style Properties</a>
+</li>
+</ul>
+</li>
+    <li class="cat-item cat-item-41"><a href="http://api.jquery.com/category/miscellaneous/" title="View all posts filed under Miscellaneous">Miscellaneous</a>
+<ul class='children'>
+    <li class="cat-item cat-item-44"><a href="http://api.jquery.com/category/miscellaneous/collection-manipulation/" title="View all posts filed under Collection Manipulation">Collection Manipulation</a>
+</li>
+    <li class="cat-item cat-item-45"><a href="http://api.jquery.com/category/miscellaneous/data-storage/" title="View all posts filed under Data Storage">Data Storage</a>
+</li>
+    <li class="cat-item cat-item-43"><a href="http://api.jquery.com/category/miscellaneous/dom-element-methods/" title="View all posts filed under DOM Element Methods">DOM Element Methods</a>
+</li>
+    <li class="cat-item cat-item-42"><a href="http://api.jquery.com/category/miscellaneous/setup-methods/" title="View all posts filed under Setup Methods">Setup Methods</a>
+</li>
+</ul>
+</li>
+    <li class="cat-item cat-item-49"><a href="http://api.jquery.com/category/offset/" title="View all posts filed under Offset">Offset</a>
+</li>
+    <li class="cat-item cat-item-85"><a href="http://api.jquery.com/category/plugins/" title="View all posts filed under Plugins">Plugins</a>
+<ul class='children'>
+    <li class="cat-item cat-item-87"><a href="http://api.jquery.com/category/plugins/data-link/" title="View all posts filed under Data Link">Data Link</a>
+</li>
+    <li class="cat-item cat-item-83"><a href="http://api.jquery.com/category/plugins/templates/" title="View all posts filed under Templates">Templates</a>
+</li>
+</ul>
+</li>
+    <li class="cat-item cat-item-68"><a href="http://api.jquery.com/category/properties/" title="View all posts filed under Properties">Properties</a>
+<ul class='children'>
+    <li class="cat-item cat-item-59"><a href="http://api.jquery.com/category/properties/jquery-object-instance-properties/" title="View all posts filed under Properties of jQuery Object Instances">Properties of jQuery Object Instances</a>
+</li>
+    <li class="cat-item cat-item-58"><a href="http://api.jquery.com/category/properties/global-jquery-object-properties/" title="View all posts filed under Properties of the Global jQuery Object">Properties of the Global jQuery Object</a>
+</li>
+</ul>
+</li>
+    <li class="cat-item cat-item-6"><a href="http://api.jquery.com/category/selectors/" title="View all posts filed under Selectors">Selectors</a>
+<ul class='children'>
+    <li class="cat-item cat-item-17"><a href="http://api.jquery.com/category/selectors/attribute-selectors/" title="View all posts filed under Attribute">Attribute</a>
+</li>
+    <li class="cat-item cat-item-16"><a href="http://api.jquery.com/category/selectors/basic-css-selectors/" title="View all posts filed under Basic">Basic</a>
+</li>
+    <li class="cat-item cat-item-61"><a href="http://api.jquery.com/category/selectors/basic-filter-selectors/" title="View all posts filed under Basic Filter">Basic Filter</a>
+</li>
+    <li class="cat-item cat-item-65"><a href="http://api.jquery.com/category/selectors/child-filter-selectors/" title="View all posts filed under Child Filter">Child Filter</a>
+</li>
+    <li class="cat-item cat-item-62"><a href="http://api.jquery.com/category/selectors/content-filter-selector/" title="View all posts filed under Content Filter">Content Filter</a>
+</li>
+    <li class="cat-item cat-item-18"><a href="http://api.jquery.com/category/selectors/form-selectors/" title="View all posts filed under Form">Form</a>
+</li>
+    <li class="cat-item cat-item-60"><a href="http://api.jquery.com/category/selectors/hierarchy-selectors/" title="View all posts filed under Hierarchy">Hierarchy</a>
+</li>
+    <li class="cat-item cat-item-96"><a href="http://api.jquery.com/category/selectors/jquery-selector-extensions/" title="View all posts filed under jQuery Extensions">jQuery Extensions</a>
+</li>
+    <li class="cat-item cat-item-63"><a href="http://api.jquery.com/category/selectors/visibility-filter-selectors/" title="View all posts filed under Visibility Filter">Visibility Filter</a>
+</li>
+</ul>
+</li>
+    <li class="cat-item cat-item-8"><a href="http://api.jquery.com/category/traversing/" title="View all posts filed under Traversing">Traversing</a>
+<ul class='children'>
+    <li class="cat-item cat-item-20"><a href="http://api.jquery.com/category/traversing/filtering/" title="View all posts filed under Filtering">Filtering</a>
+</li>
+    <li class="cat-item cat-item-22"><a href="http://api.jquery.com/category/traversing/miscellaneous-traversal/" title="View all posts filed under Miscellaneous Traversing">Miscellaneous Traversing</a>
+</li>
+    <li class="cat-item cat-item-21"><a href="http://api.jquery.com/category/traversing/tree-traversal/" title="View all posts filed under Tree Traversal">Tree Traversal</a>
+</li>
+</ul>
+</li>
+    <li class="cat-item cat-item-14"><a href="http://api.jquery.com/category/utilities/" title="View all posts filed under Utilities">Utilities</a>
+</li>
+    <li class="cat-item cat-item-69"><a href="http://api.jquery.com/category/version/" title="View all posts filed under Version">Version</a>
+<ul class='children'>
+    <li class="cat-item cat-item-70"><a href="http://api.jquery.com/category/version/1.0/" title="View all posts filed under Version 1.0">Version 1.0</a>
+</li>
+    <li class="cat-item cat-item-71"><a href="http://api.jquery.com/category/version/1.0.4/" title="View all posts filed under Version 1.0.4">Version 1.0.4</a>
+</li>
+    <li class="cat-item cat-item-72"><a href="http://api.jquery.com/category/version/1.1/" title="View all posts filed under Version 1.1">Version 1.1</a>
+</li>
+    <li class="cat-item cat-item-73"><a href="http://api.jquery.com/category/version/1.1.2/" title="View all posts filed under Version 1.1.2">Version 1.1.2</a>
+</li>
+    <li class="cat-item cat-item-74"><a href="http://api.jquery.com/category/version/1.1.3/" title="View all posts filed under Version 1.1.3">Version 1.1.3</a>
+</li>
+    <li class="cat-item cat-item-75"><a href="http://api.jquery.com/category/version/1.1.4/" title="View all posts filed under Version 1.1.4">Version 1.1.4</a>
+</li>
+    <li class="cat-item cat-item-76"><a href="http://api.jquery.com/category/version/1.2/" title="View all posts filed under Version 1.2">Version 1.2</a>
+</li>
+    <li class="cat-item cat-item-77"><a href="http://api.jquery.com/category/version/1.2.3/" title="View all posts filed under Version 1.2.3">Version 1.2.3</a>
+</li>
+    <li class="cat-item cat-item-78"><a href="http://api.jquery.com/category/version/1.2.6/" title="View all posts filed under Version 1.2.6">Version 1.2.6</a>
+</li>
+    <li class="cat-item cat-item-79"><a href="http://api.jquery.com/category/version/1.3/" title="View all posts filed under Version 1.3">Version 1.3</a>
+</li>
+    <li class="cat-item cat-item-80"><a href="http://api.jquery.com/category/version/1.4/" title="View all posts filed under Version 1.4">Version 1.4</a>
+</li>
+    <li class="cat-item cat-item-81"><a href="http://api.jquery.com/category/version/1.4.1/" title="View all posts filed under Version 1.4.1">Version 1.4.1</a>
+</li>
+    <li class="cat-item cat-item-82"><a href="http://api.jquery.com/category/version/1.4.2/" title="View all posts filed under Version 1.4.2">Version 1.4.2</a>
+</li>
+    <li class="cat-item cat-item-90"><a href="http://api.jquery.com/category/version/1.4.3/" title="View all posts filed under Version 1.4.3">Version 1.4.3</a>
+</li>
+    <li class="cat-item cat-item-91"><a href="http://api.jquery.com/category/version/1.4.4/" title="View all posts filed under Version 1.4.4">Version 1.4.4</a>
+</li>
+    <li class="cat-item cat-item-92"><a href="http://api.jquery.com/category/version/1.5/" title="View all posts filed under Version 1.5">Version 1.5</a>
+</li>
+    <li class="cat-item cat-item-94"><a href="http://api.jquery.com/category/version/1.5.1/" title="View all posts filed under Version 1.5.1">Version 1.5.1</a>
+</li>
+    <li class="cat-item cat-item-95"><a href="http://api.jquery.com/category/version/1.6/" title="View all posts filed under Version 1.6">Version 1.6</a>
+</li>
+    <li class="cat-item cat-item-98"><a href="http://api.jquery.com/category/version/1.7/" title="View all posts filed under Version 1.7">Version 1.7</a>
+</li>
+</ul>
+</li>
+        </ul>
+      </li>
+
+  </ul>
+  </div>
+  </div><!-- #jq-interiorNavigation -->
+  </div><!-- /#secondaryNavigation -->
+
+  <div id="jq-footer" class="jq-clearfix">
+    <div id="jq-credits">
+<p id="jq-copyright">&copy; 2012 <a href="http://jquery.org/">The jQuery Foundation</a></p>
+<p id="jq-hosting">Sponsored by <a href="http://mediatemple.net" class="jq-mediaTemple">Media Temple</a> and <a href="http://jquery.org/sponsors">others</a>.</p>
+    </div>
+
+    <div id="jq-footerNavigation">
+      <ul>
+        <li class="jq-download jq-first"><a href="http://docs.jquery.com/Downloading_jQuery">Download</a></li>
+        <li class="jq-documentation"><a href="http://docs.jquery.com">Documentation</a></li>
+        <li class="jq-tutorials"><a href="http://docs.jquery.com/Tutorials">Tutorials</a></li>
+        <li class="jq-bugTracker"><a href="http://bugs.jquery.com/">Bug Tracker</a></li>
+        <li class="jq-discussion jq-last"><a href="http://docs.jquery.com/Discussion">Discussion</a></li>
+      </ul>
+    </div><!-- /#jq-footerNavigation -->
+  </div><!-- /#jq-footer -->
+</div><!-- /#siteContain -->
+
+
+</div><!-- #dom-container -->
+
+</body>
+</html>
+

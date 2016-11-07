@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Gravity.  Well...</title>
+	
+	<script type="text/javascript">
+	    document.getElementsByTagName('html')[0].className = 'js';
+    </script>
+    
+<!-- development
+	    <link rel="stylesheet" type="text/css" href="css/gravity-well.css" />
+/development -->
+    
+<!-- release -->
+	    <link rel="stylesheet" type="text/css" href="css/gravity-well.min.css" />
+<!-- /release -->
+	
+</head>
+<body>
+<div id="root">
+	<div id="page">
+		<div id="body">
+			<div id="demo">
+			    <div id="demo-nojs">
+			        <h1>Gravity.  Well...</h1>
+			        <p>You need Javascript for this to work</p>
+			    </div><!-- #demo-nojs -->
+			</div><!-- #demo -->
+		</div><!-- #body -->
+		<div id="info">
+		    <h1>About 'Gravity. Well...'</h1>
+		    <p>
+		        This is an experiment with <a href="http://www.w3.org/Graphics/SVG/">SVG</a>,
+		        <a href="http://raphaeljs.com/">RaphaelJS</a> and
+		        <a href="http://code.google.com/p/base2/">Base2</a>, built by <a href="http://otaqui.com">Otaqui Ltd</a>.
+		    </p>
+		    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.0/uk/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/2.0/uk/80x15.png" /></a><br /><span xmlns:dc="http://purl.org/dc/elements/1.1/" href="http://purl.org/dc/dcmitype/InteractiveResource" property="dc:title" rel="dc:type">Gravity. Well...</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://otaqui.com/code/gravity-well/" property="cc:attributionName" rel="cc:attributionURL">Otaqui Ltd</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.0/uk/">Creative Commons Attribution-Non-Commercial-Share Alike 2.0 UK: England &amp; Wales License</a>.<br />Based on a work at <a xmlns:dc="http://purl.org/dc/elements/1.1/" href="http://otaqui.com/code/gravity-well/" rel="dc:source">otaqui.com</a>.
+		    
+		</div><!-- #info -->
+	</div><!-- #page -->
+</div><!-- #root -->
+
+<!-- development
+<script type="text/javascript" src="src/lib/base2.js"></script>
+<script type="text/javascript" src="src/lib/base2-dom.js"></script>
+<script type="text/javascript" src="src/lib/json_parse.js"></script>
+<script type="text/javascript" src="src/lib/raphael.js"></script>
+<script src="src/js/AjaxRequest.js" type="text/javascript"></script>
+<script src="src/js/AjaxResponse.js" type="text/javascript"></script>
+<script src="src/js/StageItem.js" type="text/javascript"></script>
+<script src="src/js/TextItem.js" type="text/javascript"></script>
+<script src="src/js/ButtonItem.js" type="text/javascript"></script>
+<script src="src/js/Screen.js" type="text/javascript"></script>
+<script src="src/js/Arrow.js" type="text/javascript"></script>
+<script src="src/js/Catapult.js" type="text/javascript"></script>
+<script src="src/js/Cloner.js" type="text/javascript"></script>
+<script src="src/js/EndScreen.js" type="text/javascript"></script>
+<script src="src/js/Game.js" type="text/javascript"></script>
+<script src="src/js/HelpScreen.js" type="text/javascript"></script>
+<script src="src/js/Level.js" type="text/javascript"></script>
+<script src="src/js/LevelTitle.js" type="text/javascript"></script>
+<script src="src/js/Planet.js" type="text/javascript"></script>
+<script src="src/js/Projectile.js" type="text/javascript"></script>
+<script src="src/js/Score.js" type="text/javascript"></script>
+<script src="src/js/Target.js" type="text/javascript"></script>
+<script src="src/js/Trail.js" type="text/javascript"></script>
+<script src="src/js/WelcomeScreen.js" type="text/javascript"></script>
+/development -->
+
+<!-- release -->
+<script type="text/javascript" src="js/gravity-well.min.js"></script>
+<!-- /release -->
+
+<script type="text/javascript">
+    function init() {
+        base2.DOM.bind(document);
+        var nojs = document.querySelector('#demo-nojs');
+        nojs.parentNode.removeChild(nojs);
+    	game = new Game("demo");
+        game.loadLevels("js/levels.js");
+    }
+    init();
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-618306-3");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+</body>
+</html>
+
+

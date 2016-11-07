@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>XFrame</title>
+	<script type="text/javascript" src="messenger.js"></script>
+	<script type="text/javascript">
+
+function init() {
+
+	var server = document.getElementById('server');
+	var serverproxy = document.getElementById('serverproxy');
+	var messenger = new Messenger(server, serverproxy, serverproxy.src);
+}
+
+
+	</script>
+</head>
+
+<body>
+	<h1>XFrame</h1>
+	
+	<p>Cross iFrame messaging test</p>
+	
+	<h2>The frames</h2>
+	
+	<iframe name="server" id="server" src="http://dev.otaqui.com/xframe/server.html"></iframe>
+	<iframe name="serverproxy" id="serverproxy" src="http://dev.otaqui.com/xframe/serverproxy.html"></iframe>
+	
+	<h2>The messages to send</h2>
+	<ul>
+		<li>Send message "helloworld" <button onclick="messenger.send('helloworld'); return false">Send</button></li>
+		<li>Send message "foobar" <button onclick="messenger.send('foobar'); return false">Send</button></li>
+	</ul>
+<script type="text/javascript">
+init();
+</script>
+</body>
+</html>
+

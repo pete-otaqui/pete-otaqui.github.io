@@ -1,0 +1,206 @@
+<html><head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title> - jsFiddle demo</title>
+  
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js"></script><style type="text/css"></style>
+  
+      <script type="text/javascript" src="http://flesler-plugins.googlecode.com/files/jquery.scrollTo-1.4.3.1-min.js"></script>
+    
+  
+  <style type="text/css">
+
+/*
+I've assumed you want each "section" to be
+a fixed size.  I've specified 800x600
+I've also noted where you need to change stuff
+if you change these dimensions
+*/
+
+/*
+You have to force the page to take up all the available space
+ */
+html, body {
+    height: 100%;
+}
+
+/*
+the "300" is PERCENT, and will not change
+the "600" is PIXELS and should be the height of your sections
+ */
+.section-container {
+    width: 300%;
+    height: 600px;
+}
+
+/*
+this is to "protect" yourself from small windows ...
+note that the 600 in here is the same as your section height
+ */
+@media screen and (min-height: 600) {
+    .section-container {
+        height: 100%;
+    }
+}
+
+/* nothing to change in here */
+.section {
+    height: 100%;
+    width: 33.33%;
+    float: left;
+    text-align: center;
+}
+/*
+obviously change the width and height as you wish
+but ALSO change the "margin-top" to be -(height/2),
+so in the case of "600" height we want -600/2,
+which is -300px
+ */
+.content {
+    width: 800px;
+    height: 600px;
+    margin: 0px auto;
+    position: relative;
+    top: 50%;
+    margin-top: -300px;
+}
+
+
+
+
+
+
+/*
+the rest of this is just to make the thing look pretty,
+and has nothing to with the layout system
+*/
+body {
+    background-color: #ddd;
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+li {
+    margin: 0;
+    padding: 0;
+}
+.content {
+    background-color: #fff;
+    border-bottom-right-radius: 100px;
+    box-shadow: 0px 0px 18px rgba(0, 0, 0, 0.4);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#ccc));
+    background-image: -webkit-linear-gradient(#fff, #ccc);
+    background-image: -moz-linear-gradient(#fff, #ccc);
+    background-image: -o-linear-gradient(#fff, #ccc);
+    background-image: linear-gradient(#fff, #ccc);
+    /* uncomment the line below if you don't want text centered */
+    /*text-align: left;*/
+}
+.content-padder {
+    padding: 40px;
+}
+h2 {
+    font-size: 300%;
+    letter-spacing: -3px;
+    text-align: right;
+    margin: 0;
+    text-shadow: 0px 0px 2px red;
+}
+a {
+    color: #f00;
+}
+a:visited {
+    color: #c00;
+}
+
+
+  </style>
+  
+
+
+<script type="text/javascript">
+$(window).load(function(){
+
+    $.scrollTo('.initial-section');
+
+    // loop over each anchor ... this selector finds every
+    // <a> tag which has a "data-section" attibute
+    $('a[data-section]').each(function() {
+
+        // grab the "data-section" number for this anchor
+        // and create the dom selector (class name) we want to
+        // scroll to
+        var section = '.section-' + $(this).data('section');
+        // bind to the click of this anchor
+        $(this).click(function() {
+            // ok, when clicked ... scroll to the right element
+            $.scrollTo(section, 1000);
+            return false;
+        });
+    });
+
+    // find all the "back to initial" links, 
+    // and make them scroll back to the start
+    $('a.initial').click(function() {
+        $.scrollTo('.initial-section', 1000);
+        return false;
+    });
+
+});
+
+</script>
+
+
+</head>
+<body>
+<div class="section-container">
+
+    <div class="section section-1"><div class="content">
+        <div class="content-padder"><h2>Section 1</h2><br><a href="#" class="initial">Initial</a></div>
+    </div></div>
+    <div class="section section-2"><div class="content">
+        <div class="content-padder"><h2>Section 2</h2><br><a href="#" class="initial">Initial</a></div>
+    </div></div>
+    <div class="section section-3"><div class="content">
+        <div class="content-padder"><h2>Section 3</h2><br><a href="#" class="initial">Initial</a></div>
+    </div></div>
+
+    <div class="section section-8"><div class="content">
+        <div class="content-padder"><h2>Section 8</h2><br><a href="#" class="initial">Initial</a></div>
+    </div></div>
+    <div class="section initial-section"><div class="content">
+        <div class="content-padder">
+            <h2>Initial Section</h2>
+            <ul >
+                <li ><a href="#" data-section="1">Section 1</a></li>
+                <li ><a href="#" data-section="2">Section 2</a></li>
+                <li ><a href="#" data-section="3">Section 3</a></li>
+                <li ><a href="#" data-section="4">Section 4</a></li>
+                <li ><a href="#" data-section="5">Section 5</a></li>
+                <li ><a href="#" data-section="6">Section 6</a></li>
+                <li ><a href="#" data-section="7">Section 7</a></li>
+                <li ><a href="#" data-section="8">Section 8</a></li>
+            </ul>
+        </div>
+    </div></div>
+    <div class="section section-4"><div class="content">
+        <div class="content-padder"><h2>Section 4</h2><br><a href="#" class="initial">Initial</a></div>
+    </div></div>
+
+    <div class="section section-7"><div class="content">
+        <div class="content-padder"><h2>Section 7</h2><br><a href="#" class="initial">Initial</a></div>
+    </div></div>
+    <div class="section section-6"><div class="content">
+        <div class="content-padder"><h2>Section 6</h2><br><a href="#" class="initial">Initial</a></div>
+    </div></div>
+    <div class="section section-5"><div class="content">
+        <div class="content-padder"><h2>Section 5</h2><br><a href="#" class="initial">Initial</a></div>
+    </div></div>
+
+</div>
+
+
+
+</body></html>

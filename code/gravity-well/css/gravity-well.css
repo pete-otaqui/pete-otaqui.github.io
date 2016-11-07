@@ -1,0 +1,36 @@
+body {
+    margin:0;
+    padding:0;
+    font-family:"Helvetica Neue",Helvetica,Arial;
+    background-color:#222;
+    color:#fff;
+}
+
+#body {
+    width:800px;
+    margin:0px auto;
+}
+
+#demo {
+	width:800px;
+	height:500px;
+	background-color:#000;
+	border:1px solid #333;
+	margin:5px;
+}
+.js #demo-nojs {
+    display:none;
+}
+
+#info {
+    padding : 2em;
+    color : #444;
+    background-color:#222;
+}
+#info h1, #info h2 {
+    margin-top:0;
+}
+#info a {
+    color : #666;
+    font-weight:bold;
+}
