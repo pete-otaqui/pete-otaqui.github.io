@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" manifest="manifest.appcache">
+<head>
+  <meta charset="UTF-8">
+  <title>XKP</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+</head>
+<body>
+
+  <div id="root">
+
+
+    <header id="header">
+      <div class="container">
+        <h1 class="title">XKP</h1>
+        <button class="title-button" onclick="refresh()">Refresh</button>
+      </div>
+    </header>
+
+
+    <main id="main">
+      <div class="container">
+
+        <ul class="xkp-list">
+          <li class="xkp-item">
+            <div class="xkp-pass">
+              correct-horse-battery-staple
+            </div>
+          </li>
+        </ul>
+
+      </div>
+    </main>
+
+
+    <footer id="footer">
+      <div class="container">
+        <form id="xkp-form">
+          <div class="form-group">
+            <label class="form-label">Separators</label>
+            <div class="form-controls">
+              <div class="form-control">
+                <label><input name="separators[]" type="checkbox" value="!" checked />!</label>
+                <label><input name="separators[]" type="checkbox" value="@" checked />@</label>
+                <label><input name="separators[]" type="checkbox" value="#" checked />#</label>
+                <label><input name="separators[]" type="checkbox" value="$" checked />$</label>
+                <label><input name="separators[]" type="checkbox" value="%" checked />%</label>
+                <label><input name="separators[]" type="checkbox" value="^" checked />^</label>
+                <label><input name="separators[]" type="checkbox" value="&" checked />&amp;</label>
+                <label><input name="separators[]" type="checkbox" value="*" checked />*</label>
+                <label><input name="separators[]" type="checkbox" value="-" checked />-</label>
+                <label><input name="separators[]" type="checkbox" value=":" checked />:</label>
+                <label><input name="separators[]" type="checkbox" value="." checked />.</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="numberOfWords">Num Words</label>
+            <div class="form-controls">
+              <input class="form-control" name="numberOfWords" id="numberOfWords" type="number" value="3" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="minWordLength">Min Len</label>
+            <div class="form-controls">
+              <input class="form-control" name="minWordLength" id="minWordLength" type="number" value="3" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="maxWordLength">Max Len</label>
+            <div class="form-controls">
+              <input class="form-control" name="maxWordLength" id="maxWordLength" type="number" value="8" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="capitalisationStyle">Capitlisation</label>
+            <div class="form-controls">
+              <select class="form-control" name="capitalisationStyle" id="capitalisationStyle">
+                <option value="CAP_NONE">None</option>
+                <option value="CAP_ALTERNATE_WORD">Alternate</option>
+                <option selected value="CAP_RANDOM_WORD">Rand Word</option>
+                <option value="CAP_RANDOM_LETTER">Rand Letter</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="prefixDigits">Prefix Digits</label>
+            <div class="form-controls">
+              <input class="form-control" name="prefixDigits" id="prefixDigits" type="number" value="0" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="suffixDigits">Suffix Digits</label>
+            <div class="form-controls">
+              <input class="form-control" name="suffixDigits" id="suffixDigits" type="number" value="0" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="punctuationPadding">Punctuation Padding</label>
+            <div class="form-controls">
+              <select class="form-control" name="punctuationPadding" id="punctuationPadding">
+                <option value="PUNC_BOTH">Both</option>
+                <option value="PUNC_BEFORE">Before</option>
+                <option value="PUNC_AFTER">After</option>
+                <option selected value="PUNC_NONE">None</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label"></label>
+            <div class="form-controls">
+              <button class="form-control" type="submit">Refresh</button>
+            </div>
+        </form>
+      </div>
+    </footer>
+
+  </div>
+
+    <script src="scripts/xkpasswd.js"></script>
+    <script src="scripts/clipboard.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+</html>
