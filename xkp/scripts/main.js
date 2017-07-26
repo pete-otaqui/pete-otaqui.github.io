@@ -19,7 +19,7 @@ function refresh() {
   var options = getFormValues();
   var html = '';
   var password;
-  for ( var i=0; i<4; i++ ) {
+  for ( var i=0; i<20; i++ ) {
     var password = xkpasswd.generate(options);
     html += '<li class="xkp-item"><div class="xkp-pass">' + password + '</div></li>';
   };
