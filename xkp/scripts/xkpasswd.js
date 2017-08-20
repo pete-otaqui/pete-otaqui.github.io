@@ -12,7 +12,7 @@
   var xkpasswd;
 
   var defaults = {
-    separators: ['!', '@', '#', '$', '%', '^', '&', '*', '-', ':', '.'],
+    'separators[]': ['!', '@', '#', '$', '%', '^', '&', '*', '-', ':', '.'],
     wordList: getWords(),
     numberOfWords: 4,
     minWordLength: 3,
@@ -89,7 +89,7 @@
   }
 
   function addSeparator(list, options) {
-    var separator = randomArrayMember(options.separators);
+    var separator = randomArrayMember(options['separators[]']);
     var separated = [];
     list.forEach(function(item, index) {
       separated.push(item);
@@ -116,7 +116,7 @@
   }
 
   function addPunctuationPadding(list, options) {
-    var mark = randomArrayMember(options.separators);
+    var mark = randomArrayMember(options['separators[]']);
     switch(options.punctuationPadding) {
       case PUNC_BOTH:
         list.unshift(mark);
@@ -169,12 +169,9 @@
 
   if ( typeof module !== 'undefined' && module.exports ) {
     module.exports = xkpasswd
-    console.log('module.exports', typeof exports);
   } else if ( typeof exports !== 'undefined' ) {
     exports = xkpasswd;
-    console.log('exports');
   } else {
-    console.log('global');
     global.xkpasswd = xkpasswd;
   }
 

@@ -2,7 +2,7 @@
 init();
 
 function init() {
-
+  setFormValues(loadValues());
   document.querySelector('#xkp-form')
     .addEventListener('submit', function(ev) {
       ev.preventDefault();
@@ -17,6 +17,7 @@ function init() {
 
 function refresh() {
   var options = getFormValues();
+  saveValues(options);
   var html = '';
   var password;
   for ( var i=0; i<20; i++ ) {
@@ -88,7 +89,8 @@ function setFormValue(name, value) {
     element = elements[0];
     switch(element.nodeName.toLowerCase()) {
       case 'select':
-        element.options.forEach(function(option, index) {
+        console.log('element', element.options);
+        [].slice.call(element.options).forEach(function(option, index) {
           if ( option.value === value ) {
             element.selectedIndex = index;
           }
@@ -97,5 +99,27 @@ function setFormValue(name, value) {
       default:
           element.value = value;
     }
+  } else {
+    var values = value;
+    [].slice.call(elements).forEach(function(el) {
+      const thisVal = el.value;
+      if (values.indexOf(thisVal) !== -1) {
+        el.checked = true;
+      } else {
+        el.checked = false;
+      }
+    });
   }
 }
+
+function saveValues(values) {
+  if (!'localStorage' in window) return;
+  const valueString = JSON.stringify(values);
+  localStorage.setItem('xkp', valueString);
+}
+function loadValues() {
+  if (!'localStorage' in window) return {};
+  const valueString = localStorage.getItem('xkp');
+  return JSON.parse(valueString) || {};
+}
+
