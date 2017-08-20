@@ -18,13 +18,36 @@ function init() {
 function refresh() {
   var options = getFormValues();
   saveValues(options);
+  var maxLength = getMaxLength(options);
   var html = '';
   var password;
+  var padding;
+  var fullPassword;
   for ( var i=0; i<20; i++ ) {
-    var password = xkpasswd.generate(options);
-    html += '<li class="xkp-item"><div class="xkp-pass">' + password + '</div></li>';
+    password = xkpasswd.generate(options);
+    padding = getPadding(maxLength - password.length);
+    html += '<li class="xkp-item"><div class="xkp-pass">' + password + '</div>' + padding + '</li>';
   };
   document.querySelector('.xkp-list').innerHTML = html;
+}
+
+function getMaxLength(options) {
+  // make the minimum as big as the maximum
+  var tempOptions = JSON.parse(JSON.stringify(options));
+  tempOptions.minWordLength = tempOptions.maxWordLength;
+  var password = xkpasswd.generate(tempOptions);
+  return password.length;
+}
+
+function getPadding(num) {
+  console.log('padding', num);
+  var str = '';
+  var cur = 0;
+  while (cur < num) {
+    str += '&nbsp;';
+    cur += 1;
+  }
+  return str;
 }
 
 function getFormValues() {
