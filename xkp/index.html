@@ -3,24 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <title>XKP</title>
-  <link rel="stylesheet" href="styles/main.css" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0
+    }
+
+    body,
+    input,
+    select,
+    button {
+      font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 16px
+    }
+
+    div,
+    li,
+    ul {
+      background-origin: border-box
+    }
+
+    .title {
+      margin: 0;
+      vertical-align: middle;
+      display: inline-block;
+      width: calc(100%-100px)
+    }
+
+    .title-button {
+      float: right;
+      margin-top: 12px
+    }
+
+    .notification {
+      position: fixed;
+      top: 6px;
+      right: 6px;
+      padding: 4px;
+      background: rgba(255, 255, 0, 0.9);
+      border: 1px solid #eee;
+      opacity: 0;
+      transition: all 1s;
+      pointer-events: none
+    }
+
+    .notification-show {
+      transition: all .3s;
+      opacity: 1
+    }
+
+    #root {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh
+    }
+
+    #main {
+      flex-grow: 1
+    }
+
+    #footer {
+      padding: 12px 0
+    }
+
     .xkp-list {
       display: block;
       font-family: monospace;
+      margin: 0;
+      padding: 0;
+      justify-content: space-between;
+      min-height: 240px
     }
+
     .xkp-item {
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      list-style-type: none;
       display: inline-block;
     }
+
     .xkp-pass {
+      font-size: 16px;
+      margin: 12px 0;
+      padding: 6px 4px;
+      border-radius: 4px;
+      border: 1px solid #7d7d7d;
+      cursor: pointer;
       display: inline-block;
       background-color: #eee;
-      color: #999;
+      color: #333;
     }
     .xkp-pass:hover {
       background-color: #fff;
       color: #000;
+    }
+
+    .container {
+      width: calc(100% - 48px);
+      max-width: 1000px;
+      min-width: 320px;
+      margin: 0 auto
+    }
+
+    .form-group {
+      display: flex;
+      margin-bottom: 2px
+    }
+
+    .form-label {
+      width: 20em;
+      display: block
+    }
+
+    .form-controls {
+      display: block;
+      padding: 0;
+      border-radius: 0;
+      width: 100%;
+      margin: 0
+    }
+
+    input.form-control,
+    select.form-control {
+      border: 1px solid #eee
+    }
+
+    input[type="number"].form-control {
+      width: 3em
+    }
+
+    button.form-control {
+      height: 1.6em
+    }
+
+    select.form-control {
+      height: 1.6em
+    }
+
+    select[multiple].form-control {
+      height: 4.2em
     }
   </style>
 </head>
