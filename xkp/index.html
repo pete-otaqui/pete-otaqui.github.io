@@ -2,7 +2,7 @@
 <html lang="en" manifest="manifest.appcache">
 <head>
   <meta charset="UTF-8">
-  <title>XKP</title>
+  <title>XKP Password Generator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     html,
@@ -155,7 +155,7 @@
 
     <header id="header">
       <div class="container">
-        <h1 class="title">XKP</h1>
+        <h1 class="title">XKP Password Generator</h1>
         <button class="title-button" onclick="refresh()">Refresh</button>
       </div>
     </header>
@@ -184,7 +184,7 @@
         
         <p>
           Use the controls below to set the structure of the generated phrases,
-          including symbols and numbers if required (lots of pssword systems
+          including symbols and numbers if required (lots of password systems
           require users to include these) and also capitalisation rules.
         </p>
 
@@ -205,17 +205,105 @@
             <label class="form-label">Separators</label>
             <div class="form-controls">
               <div class="form-control">
-                <label><input name="separators[]" type="checkbox" value="!" checked />!</label>
-                <label><input name="separators[]" type="checkbox" value="@" checked />@</label>
-                <label><input name="separators[]" type="checkbox" value="#" checked />#</label>
-                <label><input name="separators[]" type="checkbox" value="$" checked />$</label>
-                <label><input name="separators[]" type="checkbox" value="%" checked />%</label>
-                <label><input name="separators[]" type="checkbox" value="^" checked />^</label>
-                <label><input name="separators[]" type="checkbox" value="&" checked />&amp;</label>
-                <label><input name="separators[]" type="checkbox" value="*" checked />*</label>
-                <label><input name="separators[]" type="checkbox" value="-" checked />-</label>
-                <label><input name="separators[]" type="checkbox" value=":" checked />:</label>
-                <label><input name="separators[]" type="checkbox" value="." checked />.</label>
+                <label>
+                  <input
+                    name="separators[]"
+                    type="checkbox"
+                    value="!"
+                    checked
+                  />
+                  !
+                </label>
+                <label>
+                  <input
+                    name="separators[]"
+                    type="checkbox"
+                    value="@"
+                    checked
+                  />
+                  @
+                </label>
+                <label>
+                  <input
+                    name="separators[]"
+                    type="checkbox"
+                    value="#"
+                    checked
+                  />
+                  #
+                </label>
+                <label>
+                  <input
+                    name="separators[]"
+                    type="checkbox"
+                    value="$"
+                    checked
+                  />
+                  $
+                </label>
+                <label>
+                  <input
+                    name="separators[]"
+                    type="checkbox"
+                    value="%"
+                    checked
+                  />
+                  %
+                </label>
+                <label>
+                  <input
+                    name="separators[]"
+                    type="checkbox"
+                    value="^"
+                    checked
+                  />
+                  ^
+                </label>
+                <label>
+                  <input
+                    name="separators[]"
+                    type="checkbox"
+                    value="&"
+                    checked
+                  />
+                  &amp;
+                </label>
+                <label>
+                  <input
+                    name="separators[]"
+                    type="checkbox"
+                    value="*"
+                    checked
+                  />
+                  *
+                </label>
+                <label>
+                  <input
+                    name="separators[]"
+                    type="checkbox"
+                    value="-"
+                    checked
+                  />
+                  -
+                </label>
+                <label>
+                  <input
+                    name="separators[]"
+                    type="checkbox"
+                    value=":"
+                    checked
+                  />
+                  :
+                </label>
+                <label>
+                  <input
+                    name="separators[]"
+                    type="checkbox"
+                    value="."
+                    checked
+                  />
+                  .
+                </label>
               </div>
             </div>
           </div>
@@ -260,9 +348,15 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label" for="capitalisationStyle">Capitlisation</label>
+            <label class="form-label" for="capitalisationStyle">
+              Capitlisation
+            </label>
             <div class="form-controls">
-              <select class="form-control" name="capitalisationStyle" id="capitalisationStyle">
+              <select
+                class="form-control"
+                name="capitalisationStyle"
+                id="capitalisationStyle"
+              >
                 <option value="CAP_NONE">None</option>
                 <option value="CAP_ALTERNATE_WORD">Alternate</option>
                 <option selected value="CAP_RANDOM_WORD">Rand Word</option>
@@ -297,9 +391,15 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label" for="punctuationPadding">Punctuation Padding</label>
+            <label class="form-label" for="punctuationPadding">
+              Punctuation Padding
+            </label>
             <div class="form-controls">
-              <select class="form-control" name="punctuationPadding" id="punctuationPadding">
+              <select
+                class="form-control"
+                name="punctuationPadding"
+                id="punctuationPadding"
+              >
                 <option value="PUNC_BOTH">Both</option>
                 <option value="PUNC_BEFORE">Before</option>
                 <option value="PUNC_AFTER">After</option>

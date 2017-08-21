@@ -20,13 +20,14 @@ function refresh() {
   saveValues(options);
   var maxLength = getMaxLength(options);
   var html = '';
-  var password;
-  var padding;
-  var fullPassword;
+  var password, padding;
+  var div, li;
   for ( var i=0; i<20; i++ ) {
     password = xkpasswd.generate(options);
     padding = getPadding(maxLength - password.length);
-    html += '<li class="xkp-item"><div class="xkp-pass">' + password + '</div>' + padding + '</li>';
+    div = '<div class="xkp-pass">' + password + '</div>';
+    li = '<li class="xkp-item">' + div + padding + '</li>';
+    html += li;
   };
   document.querySelector('.xkp-list').innerHTML = html;
 }
@@ -40,7 +41,6 @@ function getMaxLength(options) {
 }
 
 function getPadding(num) {
-  console.log('padding', num);
   var str = '';
   var cur = 0;
   while (cur < num) {
@@ -112,7 +112,6 @@ function setFormValue(name, value) {
     element = elements[0];
     switch(element.nodeName.toLowerCase()) {
       case 'select':
-        console.log('element', element.options);
         [].slice.call(element.options).forEach(function(option, index) {
           if ( option.value === value ) {
             element.selectedIndex = index;
